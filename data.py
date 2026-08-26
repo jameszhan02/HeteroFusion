@@ -59,9 +59,10 @@ class MixDatasetBuilder:
         )
         return dataset_module["train_dataset"]
 
-    def get_mixed_dataloader(self, task_datasets_config):
+    def get_mixed_dataloader(self, task_datasets_config, seed=None):
         main_datasets = []
         replay_configs = []
+        rng = np.random.default_rng(seed)
 
         for ds_cfg in task_datasets_config:
             if ds_cfg.get('type') == 'main':
@@ -100,7 +101,7 @@ class MixDatasetBuilder:
             print(f"Loading Replay Dataset: {name} (Target Ratio: {ratio}, Count: {target_count})")
             
             if ds_len > target_count:
-                indices = np.random.choice(ds_len, target_count, replace=False)
+                indices = rng.choice(ds_len, target_count, replace=False)
                 subset_replay = Subset(full_replay_ds, indices)
                 datasets_to_concat.append(subset_replay)
             else:
@@ -110,12 +111,18 @@ class MixDatasetBuilder:
         final_dataset = ConcatDataset(datasets_to_concat)
         print(f"Final Mixed Dataset Size: {len(final_dataset)}")
 
+        generator = None
+        if seed is not None:
+            generator = torch.Generator()
+            generator.manual_seed(int(seed))
+
         dataloader = DataLoader(
             final_dataset,
             batch_size=self.data_config['batch_size'],
             shuffle=True, 
             collate_fn=lambda batch: collate_fn(batch, self.tokenizer),
             num_workers=self.data_config.get('num_workers', 4),
-            pin_memory=True
+            pin_memory=True,
+            generator=generator
         )
         return dataloader, self.tokenizer

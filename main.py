@@ -4,6 +4,8 @@ import torch
 import os
 import json
 import gc
+import random
+import numpy as np
 from transformers import AutoModelForCausalLM
 from peft import PeftModel, LoraConfig
 from safetensors.torch import load_file
@@ -12,6 +14,9 @@ from src.trainer import HeteroFusionTrainer
 
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+BUNDLED_ENV_DEFAULTS = {
+    "ADAPTER_ROOT": os.path.join(PROJECT_ROOT, "adapters"),
+}
 
 def load_adapter_conf_safe(path):
     with open(os.path.join(path, "adapter_config.json"), 'r') as f:
@@ -33,7 +38,15 @@ def resolve_path(path_value, *, base_dir=PROJECT_ROOT):
     if not path_value:
         return path_value
 
-    expanded = os.path.expandvars(os.path.expanduser(path_value))
+    expanded = os.path.expanduser(path_value)
+    # Allow repo-local adapters to work out of the box when ADAPTER_ROOT is unset.
+    for env_name, fallback in BUNDLED_ENV_DEFAULTS.items():
+        if os.environ.get(env_name):
+            continue
+        expanded = expanded.replace(f"${{{env_name}}}", fallback)
+        expanded = expanded.replace(f"${env_name}", fallback)
+
+    expanded = os.path.expandvars(expanded)
     if os.path.isabs(expanded):
         return os.path.normpath(expanded)
     return os.path.normpath(os.path.join(base_dir, expanded))
@@ -66,6 +79,14 @@ def resolve_pipeline_config(config, config_path):
     resolved['tasks'] = resolved_tasks
     return resolved
 
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
 def run_pipeline(config_path):
     print(f"=== Loading Pipeline Config from {config_path} ===")
     with open(config_path, 'r') as f:
@@ -90,7 +111,10 @@ def run_pipeline(config_path):
 
     for idx, task in enumerate(config['tasks']):
         task_name = task.get('task_name', f"Task_{idx}")
+        task_seed = int(task.get('seed', task.get('training', {}).get('seed', config.get('seed', 42))))
+        set_seed(task_seed)
         print(f"\n{'='*20} Starting Task {idx+1}/{len(config['tasks'])}: {task_name} {'='*20}")
+        print(f"Using Seed: {task_seed}")
         
         task_output_dir = os.path.join(global_output_dir, task_name)
         os.makedirs(task_output_dir, exist_ok=True)
@@ -114,12 +138,13 @@ def run_pipeline(config_path):
         else:
             tgt_state = torch.load(os.path.join(current_target_lora_path, "adapter_model.bin"), map_location="cpu")
 
-        dataloader, _ = data_builder.get_mixed_dataloader(task['datasets'])
+        dataloader, _ = data_builder.get_mixed_dataloader(task['datasets'], seed=task_seed)
         
         trainer_config = {
             'output_dir': task_output_dir,
             'model': {
-                'transfer_ratio': task.get('transfer_ratio', 1.0), 
+                'transfer_ratio': task.get('transfer_ratio', 1.0),
+                'layer_alignment': task.get('layer_alignment', 'tail'),
             },
             'training': task['training']
         }

@@ -13,6 +13,11 @@ env/
 
 outputs/
 logs/
+adapters/*
+!adapters/README.md
+infer_results/
+History/
+paper/
 
 *.log
 *.tmp

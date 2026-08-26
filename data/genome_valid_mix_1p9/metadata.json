@@ -1,0 +1,14 @@
+{
+  "dataset_name": "genome_valid_mix_6tasks",
+  "output_file": "/mnt/ssd2/csl/HeteroFusion_release_sanitized/data/genome_valid_mix_1p9/genome_valid_mix_6tasks.json",
+  "total": 1200,
+  "counts": {
+    "mmlupro": 200,
+    "gsm8k": 200,
+    "mbpp": 200,
+    "drop": 200,
+    "flores37": 200,
+    "emorynlp": 200
+  },
+  "source_split": "valid"
+}

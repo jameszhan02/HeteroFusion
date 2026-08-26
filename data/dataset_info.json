@@ -1,0 +1,2303 @@
+{
+  "EET_ACE05": {
+    "file_name": "EET/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_Broad_Tweet_Corpus": {
+    "file_name": "ES/Broad_Tweet_Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_conll04": {
+    "file_name": "RE/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_ACE_2005_sample_15000": {
+    "file_name": "ES/ACE_2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "cola_qa_train": {
+    "file_name": "glue/cola/cola_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "cola_qa_validation": {
+    "file_name": "glue/cola/cola_qa_validation.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "arpo_sft": {
+    "file_name": "agent_sft/final_5w4_still.jsonl",
+    "formatting": "sharegpt",
+    "messages": "conversations",
+    "system": "system",
+    "role_tag": "from",
+    "content_tag": "value"
+  },
+  "mnli_qa_train": {
+    "file_name": "glue/mnli/mnli_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mrpc_qa_train": {
+    "file_name": "glue/mrpc/mrpc_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mrpc_qa_test": {
+    "file_name": "glue/mrpc/mrpc_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mrpc_qa_validation": {
+    "file_name": "glue/mrpc/mrpc_qa_validation.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "qnli_qa_train": {
+    "file_name": "glue/qnli/qnli_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "qnli_qa_validation": {
+    "file_name": "glue/qnli/qnli_qa_validation.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "qnli_qa_test": {
+    "file_name": "glue/qnli/qnli_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "qqp_qa_train": {
+    "file_name": "glue/qqp/qqp_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "qqp_qa_test": {
+    "file_name": "glue/qqp/qqp_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "glue_merged": {
+    "file_name": "merge_dataset/merge_glue.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "rte_qa_train": {
+    "file_name": "glue/rte/rte_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "rte_qa_test": {
+    "file_name": "glue/rte/rte_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "rte_qa_validation": {
+    "file_name": "glue/rte/rte_qa_validation.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "sst2_qa_train": {
+    "file_name": "glue/sst2/sst2_qa_train.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "sst2_qa_validation": {
+    "file_name": "glue/sst2/sst2_qa_validation.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "sst2_qa_test": {
+    "file_name": "glue/sst2/sst2_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mnli_test_matched.jsonl": {
+    "file_name": "glue/mnli/mnli_test_matched.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mnli_test_mismatched.jsonl": {
+    "file_name": "glue/mnli/mnli_test_mismatched.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "cola_qa_test": {
+    "file_name": "glue/cola/cola_qa_test.jsonl",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "ES_ACE_2004_sample_15000": {
+    "file_name": "ES/ACE_2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CrossNER_literature": {
+    "file_name": "ES/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_FindVehicle": {
+    "file_name": "ES/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CrossNER_politics": {
+    "file_name": "ES/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_ADE_corpus": {
+    "file_name": "RE/ADE_corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CoNLL_2003": {
+    "file_name": "ET/CoNLL_2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_WikiANN_en": {
+    "file_name": "ES/WikiANN_en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_Broad_Tweet_Corpus": {
+    "file_name": "NER/Broad_Tweet_Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_FabNER": {
+    "file_name": "ES/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_WikiNeural": {
+    "file_name": "ES/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_Broad_Tweet_Corpus": {
+    "file_name": "ET/Broad_Tweet_Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_WikiANN_en": {
+    "file_name": "NER/WikiANN_en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_WikiANN_en": {
+    "file_name": "ET/WikiANN_en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_ACE_2005_sample_15000": {
+    "file_name": "NER/ACE_2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_Ontonotes_sample_30000": {
+    "file_name": "ES/Ontonotes_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_bc5cdr": {
+    "file_name": "ES/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_bc2gm": {
+    "file_name": "ES/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_MultiNERD": {
+    "file_name": "ES/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_ACE_2004": {
+    "file_name": "NER/ACE_2004.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_PolyglotNER": {
+    "file_name": "ES/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_SciERC": {
+    "file_name": "RE/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CoNLL_2003": {
+    "file_name": "ES/CoNLL_2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EET_CASIE": {
+    "file_name": "EET/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "FabNER_sample300": {
+    "file_name": "sample/FabNER_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mit-movie_sample300": {
+    "file_name": "sample/mit-movie_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "EET_PHEE": {
+    "file_name": "EET/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EET_dev_ACE05": {
+    "file_name": "EET/dev/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "FindVehicle_sample300": {
+    "file_name": "sample/FindVehicle_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "conll04_sample300": {
+    "file_name": "merge_dataset/conll04_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "merged_dataset": {
+    "file_name": "merge_dataset/merged_dataset.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ACE05_sample300": {
+    "file_name": "merge_dataset/ACE05_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "CASIE_sample300": {
+    "file_name": "merge_dataset/ACE05_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "New-York-Times-RE_sample_30000_sample300": {
+    "file_name": "merge_dataset/New-York-Times-RE_sample_30000_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EET_dev_CASIE": {
+    "file_name": "EET/dev/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EET_dev_PHEE": {
+    "file_name": "EET/dev/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_GENIA": {
+    "file_name": "EE/GENIA.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_ACE05": {
+    "file_name": "EE/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_CASIE": {
+    "file_name": "EE/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_PHEE": {
+    "file_name": "EE/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_dev_GENIA": {
+    "file_name": "EE/dev/GENIA.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_dev_ACE05": {
+    "file_name": "EE/dev/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_dev_CASIE": {
+    "file_name": "EE/dev/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EE_dev_PHEE": {
+    "file_name": "EE/dev/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_bc4chemd": {
+    "file_name": "ES/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CrossNER_science": {
+    "file_name": "ES/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_GENIA_NER": {
+    "file_name": "ES/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CoNLL 2003": {
+    "file_name": "ES/CoNLL 2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_TweetNER7": {
+    "file_name": "ES/TweetNER7.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_AnatEM": {
+    "file_name": "ES/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_mit-restaurant": {
+    "file_name": "ES/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_mit-movie": {
+    "file_name": "ES/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_ncbi": {
+    "file_name": "ES/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_ACE 2004_sample_15000": {
+    "file_name": "ES/ACE 2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CrossNER_AI": {
+    "file_name": "ES/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_CrossNER_music": {
+    "file_name": "ES/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_HarveyNER": {
+    "file_name": "ES/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_ACE 2004": {
+    "file_name": "ES/dev/ACE 2004.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_FindVehicle": {
+    "file_name": "ES/dev/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_ACE 2005_sample_15000": {
+    "file_name": "ES/dev/ACE 2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_bc4chemd": {
+    "file_name": "ES/dev/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_bc5cdr": {
+    "file_name": "ES/dev/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CrossNER_science": {
+    "file_name": "ES/dev/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_GENIA_NER": {
+    "file_name": "ES/dev/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_MultiNERD": {
+    "file_name": "ES/dev/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_Ontonotes": {
+    "file_name": "ES/dev/Ontonotes.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_WikiANN en": {
+    "file_name": "ES/dev/WikiANN en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CoNLL 2003": {
+    "file_name": "ES/dev/CoNLL 2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_FabNER": {
+    "file_name": "ES/dev/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_TweetNER7": {
+    "file_name": "ES/dev/TweetNER7.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_AnatEM": {
+    "file_name": "ES/dev/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CrossNER_literature": {
+    "file_name": "ES/dev/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_mit-restaurant": {
+    "file_name": "ES/dev/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_TweetNER7_sample_15000": {
+    "file_name": "ES/dev/TweetNER7_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_mit-movie": {
+    "file_name": "ES/dev/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_Broad Tweet Corpus": {
+    "file_name": "ES/dev/Broad Tweet Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_PolyglotNER": {
+    "file_name": "ES/dev/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_WikiNeural": {
+    "file_name": "ES/dev/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_ACE 2005": {
+    "file_name": "ES/dev/ACE 2005.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CoNLL 2003_sample_15000": {
+    "file_name": "ES/dev/CoNLL 2003_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_bc2gm": {
+    "file_name": "ES/dev/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_ncbi": {
+    "file_name": "ES/dev/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_ACE 2004_sample_15000": {
+    "file_name": "ES/dev/ACE 2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CrossNER_AI": {
+    "file_name": "ES/dev/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_Ontonotes_sample_30000": {
+    "file_name": "ES/dev/Ontonotes_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CrossNER_music": {
+    "file_name": "ES/dev/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_CrossNER_politics": {
+    "file_name": "ES/dev/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ES_dev_HarveyNER": {
+    "file_name": "ES/dev/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_ACE 2004": {
+    "file_name": "NER/ACE 2004.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_FindVehicle": {
+    "file_name": "NER/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_ACE 2005_sample_15000": {
+    "file_name": "NER/ACE 2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_bc4chemd": {
+    "file_name": "NER/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_bc5cdr": {
+    "file_name": "NER/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CrossNER_science": {
+    "file_name": "NER/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_GENIA_NER": {
+    "file_name": "NER/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_MultiNERD": {
+    "file_name": "NER/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_Ontonotes": {
+    "file_name": "NER/Ontonotes.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_WikiANN en": {
+    "file_name": "NER/WikiANN en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_FabNER": {
+    "file_name": "NER/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_AnatEM": {
+    "file_name": "NER/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CrossNER_literature": {
+    "file_name": "NER/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CoNLL_2003_sample_15000": {
+    "file_name": "NER/CoNLL_2003_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_mit-restaurant": {
+    "file_name": "NER/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_TweetNER7_sample_15000": {
+    "file_name": "NER/TweetNER7_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_mit-movie": {
+    "file_name": "NER/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_Broad Tweet Corpus": {
+    "file_name": "NER/Broad Tweet Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_PolyglotNER": {
+    "file_name": "NER/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_WikiNeural": {
+    "file_name": "NER/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CoNLL 2003_sample_15000": {
+    "file_name": "NER/CoNLL 2003_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_bc2gm": {
+    "file_name": "NER/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_ncbi": {
+    "file_name": "NER/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CrossNER_AI": {
+    "file_name": "NER/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CrossNER_music": {
+    "file_name": "NER/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_CrossNER_politics": {
+    "file_name": "NER/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_HarveyNER": {
+    "file_name": "NER/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_ACE 2004": {
+    "file_name": "NER/dev/ACE 2004.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_FindVehicle": {
+    "file_name": "NER/dev/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_ACE 2005_sample_15000": {
+    "file_name": "NER/dev/ACE 2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_bc4chemd": {
+    "file_name": "NER/dev/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_bc5cdr": {
+    "file_name": "NER/dev/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CrossNER_science": {
+    "file_name": "NER/dev/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_GENIA_NER": {
+    "file_name": "NER/dev/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_MultiNERD": {
+    "file_name": "NER/dev/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_Ontonotes": {
+    "file_name": "NER/dev/Ontonotes.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_WikiANN_en": {
+    "file_name": "NER/dev/WikiANN_en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CoNLL 2003": {
+    "file_name": "NER/dev/CoNLL 2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_FabNER": {
+    "file_name": "NER/dev/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_TweetNER7": {
+    "file_name": "NER/dev/TweetNER7.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_AnatEM": {
+    "file_name": "NER/dev/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CrossNER_literature": {
+    "file_name": "NER/dev/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_mit-restaurant": {
+    "file_name": "NER/dev/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_TweetNER7_sample_15000": {
+    "file_name": "NER/dev/TweetNER7_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_mit-movie": {
+    "file_name": "NER/dev/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_Broad Tweet Corpus": {
+    "file_name": "NER/dev/Broad Tweet Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_PolyglotNER": {
+    "file_name": "NER/dev/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_WikiNeural": {
+    "file_name": "NER/dev/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_ACE_2005": {
+    "file_name": "NER/dev/ACE_2005.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CoNLL 2003_sample_15000": {
+    "file_name": "NER/dev/CoNLL 2003_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_bc2gm": {
+    "file_name": "NER/dev/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_ncbi": {
+    "file_name": "NER/dev/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_ACE 2004_sample_15000": {
+    "file_name": "NER/dev/ACE 2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CrossNER_AI": {
+    "file_name": "NER/dev/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_Ontonotes_sample_30000": {
+    "file_name": "NER/dev/Ontonotes_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CrossNER_music": {
+    "file_name": "NER/dev/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_CrossNER_politics": {
+    "file_name": "NER/dev/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "NER_dev_HarveyNER": {
+    "file_name": "NER/dev/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "other_New-York-Times-RE": {
+    "file_name": "other/New-York-Times-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_kbp37": {
+    "file_name": "EP/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_semval-RE": {
+    "file_name": "EP/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_NYT11": {
+    "file_name": "EP/NYT11.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_ADE_corpus": {
+    "file_name": "EP/ADE_corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_SciERC": {
+    "file_name": "EP/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_GIDS": {
+    "file_name": "EP/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_conll04": {
+    "file_name": "EP/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_New-York-Times-RE_sample_30000": {
+    "file_name": "EP/New-York-Times-RE_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_NYT11_sample_30000": {
+    "file_name": "EP/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_SciERC_sample_10000": {
+    "file_name": "EP/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_kbp37": {
+    "file_name": "EP/dev/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_conll04_sample_5000": {
+    "file_name": "EP/dev/conll04_sample_5000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_semval-RE": {
+    "file_name": "EP/dev/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_ADE_corpus": {
+    "file_name": "EP/dev/ADE_corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_NYT11": {
+    "file_name": "EP/dev/NYT11.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_ADE_corpus_sample_15000": {
+    "file_name": "EP/dev/ADE_corpus_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_SciERC": {
+    "file_name": "EP/dev/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_New-York-Times-RE": {
+    "file_name": "EP/dev/New-York-Times-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_GIDS": {
+    "file_name": "EP/dev/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_conll04": {
+    "file_name": "EP/dev/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_New-York-Times-RE_sample_30000": {
+    "file_name": "EP/dev/New-York-Times-RE_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_NYT11_sample_30000": {
+    "file_name": "EP/dev/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EP_dev_SciERC_sample_10000": {
+    "file_name": "EP/dev/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_kbp37": {
+    "file_name": "RE/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_conll04_sample_5000": {
+    "file_name": "RE/conll04_sample_5000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_semval-RE": {
+    "file_name": "RE/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_ADE_corpus_sample_15000": {
+    "file_name": "RE/ADE_corpus_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_GIDS": {
+    "file_name": "RE/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_New-York-Times-RE_sample_30000": {
+    "file_name": "RE/New-York-Times-RE_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_NYT11_sample_30000": {
+    "file_name": "RE/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_SciERC_sample_10000": {
+    "file_name": "RE/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_kbp37": {
+    "file_name": "RE/dev/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_conll04_sample_5000": {
+    "file_name": "RE/dev/conll04_sample_5000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_semval-RE": {
+    "file_name": "RE/dev/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_ADE_corpus": {
+    "file_name": "RE/dev/ADE_corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_NYT11": {
+    "file_name": "RE/dev/NYT11.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_ADE_corpus_sample_15000": {
+    "file_name": "RE/dev/ADE_corpus_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_SciERC": {
+    "file_name": "RE/dev/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_New-York-Times-RE": {
+    "file_name": "RE/dev/New-York-Times-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_GIDS": {
+    "file_name": "RE/dev/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_conll04": {
+    "file_name": "RE/dev/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_NYT11_sample_30000": {
+    "file_name": "RE/dev/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "RE_dev_SciERC_sample_10000": {
+    "file_name": "RE/dev/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "mit-restaurant-sampled300": {
+    "file_name": "merge_dataset/mit-restaurant-sampled300.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_kbp37": {
+    "file_name": "EPR/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_conll04_sample_5000": {
+    "file_name": "EPR/conll04_sample_5000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_semval-RE": {
+    "file_name": "EPR/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_ADE_corpus_sample_15000": {
+    "file_name": "EPR/ADE_corpus_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_SciERC": {
+    "file_name": "EPR/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_GIDS": {
+    "file_name": "EPR/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_conll04": {
+    "file_name": "EPR/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_New-York-Times-RE_sample_30000": {
+    "file_name": "EPR/New-York-Times-RE_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_NYT11_sample_30000": {
+    "file_name": "EPR/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_SciERC_sample_10000": {
+    "file_name": "EPR/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_kbp37": {
+    "file_name": "EPR/dev/kbp37.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_conll04_sample_5000": {
+    "file_name": "EPR/dev/conll04_sample_5000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_semval-RE": {
+    "file_name": "EPR/dev/semval-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_ADE_corpus": {
+    "file_name": "EPR/dev/ADE_corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_NYT11": {
+    "file_name": "EPR/dev/NYT11.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_ADE_corpus_sample_15000": {
+    "file_name": "EPR/dev/ADE_corpus_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_SciERC": {
+    "file_name": "EPR/dev/SciERC.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_New-York-Times-RE": {
+    "file_name": "EPR/dev/New-York-Times-RE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_GIDS": {
+    "file_name": "EPR/dev/GIDS.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_conll04": {
+    "file_name": "EPR/dev/conll04.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_New-York-Times-RE_sample_30000": {
+    "file_name": "EPR/dev/New-York-Times-RE_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_NYT11_sample_30000": {
+    "file_name": "EPR/dev/NYT11_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EPR_dev_SciERC_sample_10000": {
+    "file_name": "EPR/dev/SciERC_sample_10000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_FindVehicle": {
+    "file_name": "ET/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_ACE 2005_sample_15000": {
+    "file_name": "ET/ACE 2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_bc4chemd": {
+    "file_name": "ET/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_bc5cdr": {
+    "file_name": "ET/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CrossNER_science": {
+    "file_name": "ET/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_GENIA_NER": {
+    "file_name": "ET/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_MultiNERD": {
+    "file_name": "ET/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_Ontonotes": {
+    "file_name": "ET/Ontonotes.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_WikiANN en": {
+    "file_name": "ET/WikiANN en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CoNLL 2003": {
+    "file_name": "ET/CoNLL 2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_FabNER": {
+    "file_name": "ET/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_AnatEM": {
+    "file_name": "ET/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CrossNER_literature": {
+    "file_name": "ET/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_mit-restaurant": {
+    "file_name": "ET/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_TweetNER7_sample_15000": {
+    "file_name": "ET/TweetNER7_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_mit-movie": {
+    "file_name": "ET/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_Broad Tweet Corpus": {
+    "file_name": "ET/Broad Tweet Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_PolyglotNER": {
+    "file_name": "ET/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_WikiNeural": {
+    "file_name": "ET/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_bc2gm": {
+    "file_name": "ET/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_ncbi": {
+    "file_name": "ET/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_ACE 2004_sample_15000": {
+    "file_name": "ET/ACE 2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CrossNER_AI": {
+    "file_name": "ET/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CrossNER_music": {
+    "file_name": "ET/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_CrossNER_politics": {
+    "file_name": "ET/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_HarveyNER": {
+    "file_name": "ET/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_ACE 2004": {
+    "file_name": "ET/dev/ACE 2004.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_FindVehicle": {
+    "file_name": "ET/dev/FindVehicle.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_ACE 2005_sample_15000": {
+    "file_name": "ET/dev/ACE 2005_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_bc4chemd": {
+    "file_name": "ET/dev/bc4chemd.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_bc5cdr": {
+    "file_name": "ET/dev/bc5cdr.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CrossNER_science": {
+    "file_name": "ET/dev/CrossNER_science.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_GENIA_NER": {
+    "file_name": "ET/dev/GENIA_NER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_MultiNERD": {
+    "file_name": "ET/dev/MultiNERD.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_Ontonotes": {
+    "file_name": "ET/dev/Ontonotes.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_WikiANN en": {
+    "file_name": "ET/dev/WikiANN en.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CoNLL 2003": {
+    "file_name": "ET/dev/CoNLL 2003.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_FabNER": {
+    "file_name": "ET/dev/FabNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_TweetNER7": {
+    "file_name": "ET/dev/TweetNER7.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_AnatEM": {
+    "file_name": "ET/dev/AnatEM.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CrossNER_literature": {
+    "file_name": "ET/dev/CrossNER_literature.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_mit-restaurant": {
+    "file_name": "ET/dev/mit-restaurant.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_TweetNER7_sample_15000": {
+    "file_name": "ET/dev/TweetNER7_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_mit-movie": {
+    "file_name": "ET/dev/mit-movie.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_Broad Tweet Corpus": {
+    "file_name": "ET/dev/Broad Tweet Corpus.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_PolyglotNER": {
+    "file_name": "ET/dev/PolyglotNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_WikiNeural": {
+    "file_name": "ET/dev/WikiNeural.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_ACE 2005": {
+    "file_name": "ET/dev/ACE 2005.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CoNLL 2003_sample_15000": {
+    "file_name": "ET/dev/CoNLL 2003_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_bc2gm": {
+    "file_name": "ET/dev/bc2gm.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_ncbi": {
+    "file_name": "ET/dev/ncbi.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_ACE 2004_sample_15000": {
+    "file_name": "ET/dev/ACE 2004_sample_15000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CrossNER_AI": {
+    "file_name": "ET/dev/CrossNER_AI.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_Ontonotes_sample_30000": {
+    "file_name": "ET/dev/Ontonotes_sample_30000.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CrossNER_music": {
+    "file_name": "ET/dev/CrossNER_music.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_CrossNER_politics": {
+    "file_name": "ET/dev/CrossNER_politics.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "ET_dev_HarveyNER": {
+    "file_name": "ET/dev/HarveyNER.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_ACE05": {
+    "file_name": "EEA/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_CASIE": {
+    "file_name": "EEA/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_PHEE": {
+    "file_name": "EEA/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_dev_ACE05": {
+    "file_name": "EEA/dev/ACE05.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_dev_CASIE": {
+    "file_name": "EEA/dev/CASIE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "EEA_dev_PHEE": {
+    "file_name": "EEA/dev/PHEE.json",
+    "columns": {
+      "prompt": "instruction",
+      "response": "output"
+    }
+  },
+  "piqa_en_task": {
+    "file_name": "piqa/train_piqa_structured.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    },
+    "system_prompt": "You are a precise and logical reasoning assistant. You must follow the user's instructions exactly and provide your response strictly in the requested JSON format."
+  },
+  "piqa_en_dev_task": {
+    "file_name": "piqa/dev_piqa_structured.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    },
+    "system_prompt": "You are a precise and logical reasoning assistant. You must follow the user's instructions exactly and provide your response strictly in the requested JSON format."
+  },
+  "gsm8k_train": {
+    "file_name": "GSM8K/gsm8k_train_split.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "gsm8k_test": {
+    "file_name": "GSM8K/gsm8k_test_official.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "gsm8k_val": {
+    "file_name": "GSM8K/gsm8k_val_split.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "gsm8k_align": {
+    "file_name": "GSM8K/gsm8k_align.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "piqa_replay": {
+    "file_name": "piqa/piqa_replay.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "gsm8k_piqa": {
+    "file_name": "merge_dataset/gsm8k_piqa.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "CrossNER_AI_sample300": {
+    "file_name": "sample/CrossNER_AI_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "CrossNER_literature_sample300": {
+    "file_name": "sample/CrossNER_literature_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "mit-restaurant_sample300": {
+    "file_name": "sample/mit-restaurant_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "TweetNER7_sample_15000_sample300": {
+    "file_name": "sample/TweetNER7_sample_15000_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "WikiANN_en_sample300": {
+    "file_name": "sample/WikiANN_en_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "MultiNERD_sample300": {
+    "file_name": "sample/MultiNERD_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+    "merge": {
+    "file_name": "sample/merge.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },  "RE_New-York-Times-RE_sample_30000_sample300": {
+    "file_name": "sample/RE_New-York-Times-RE_sample_30000_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "RE_conll04_sample300": {
+    "file_name": "sample/RE_conll04_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "ET_FabNER_sample300": {
+    "file_name": "sample/ET_FabNER_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "ET_FindVehicle_sample300": {
+    "file_name": "sample/ET_FindVehicle_sample300.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "genome_valid_mix_6tasks": {
+    "file_name": "genome_valid_mix_1p9/genome_valid_mix_6tasks.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  }
+
+}
