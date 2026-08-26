@@ -17,22 +17,33 @@ class WeightPatcher:
         self.new_weights_dict = new_weights_dict
         self.backup = {}
 
+    def _get_target_layer(self, module, lora_attr):
+        lora_layer = getattr(module, lora_attr)
+        if hasattr(lora_layer, 'default'):
+            return lora_layer.default
+        return lora_layer
+
     def __enter__(self):
         for name, module in self.module_map.items():
-            if name in self.new_weights_dict:
-                if hasattr(module.lora_B, 'default'): target_layer = module.lora_B.default
-                else: target_layer = module.lora_B
-                self.backup[name] = target_layer.weight
-                del target_layer.weight 
-                target_layer.weight = self.new_weights_dict[name].to(self.backup[name].device)
+            if name not in self.new_weights_dict:
+                continue
+
+            for lora_attr, new_weight in self.new_weights_dict[name].items():
+                target_layer = self._get_target_layer(module, lora_attr)
+                backup_key = (name, lora_attr)
+                self.backup[backup_key] = target_layer.weight
+                del target_layer.weight
+                target_layer.weight = new_weight.to(self.backup[backup_key].device)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         for name, module in self.module_map.items():
-            if name in self.backup:
-                if hasattr(module.lora_B, 'default'): target_layer = module.lora_B.default
-                else: target_layer = module.lora_B
+            for lora_attr in ("lora_A", "lora_B"):
+                backup_key = (name, lora_attr)
+                if backup_key not in self.backup:
+                    continue
+                target_layer = self._get_target_layer(module, lora_attr)
                 del target_layer.weight
-                target_layer.weight = self.backup[name]
+                target_layer.weight = self.backup[backup_key]
         self.backup.clear()
 
 class HeteroFusionTrainer:
@@ -54,9 +65,26 @@ class HeteroFusionTrainer:
         self.mu_target = float(config['training'].get('mu_target', -1.0))
         self.sigma_target = float(config['training'].get('sigma_target', 1.0))
         self.num_projections = int(config['training'].get('num_projections', 1024))
+        self.layer_alignment = str(config['model'].get('layer_alignment', 'tail')).lower()
+        self.update_mode = str(config['training'].get('update_mode', 'b_only')).lower()
+        valid_alignment_modes = {"tail", "head", "uniform", "naive"}
+        valid_update_modes = {"b_only", "a_only", "ab_joint"}
+        if self.layer_alignment not in valid_alignment_modes:
+            raise ValueError(
+                f"Unsupported layer_alignment={self.layer_alignment}. "
+                f"Expected one of {sorted(valid_alignment_modes)}."
+            )
+        if self.update_mode not in valid_update_modes:
+            raise ValueError(
+                f"Unsupported update_mode={self.update_mode}. "
+                f"Expected one of {sorted(valid_update_modes)}."
+            )
+        self.update_a = self.update_mode in {"a_only", "ab_joint"}
+        self.update_b = self.update_mode in {"b_only", "ab_joint"}
         
         print(
             f"⚙️  HeteroFusion Pipeline: BlockSize={self.block_size}, "
+            f"Alignment={self.layer_alignment}, UpdateMode={self.update_mode}, "
             f"SVD-guided sparse gate ON (mu={self.mu_gate}), RDM ON"
         )
 
@@ -68,7 +96,12 @@ class HeteroFusionTrainer:
         raw_ratio = config['model'].get('transfer_ratio', 1.0)
         self.transfer_ratio = self._parse_ratio(raw_ratio)
 
-        self.groups = self._group_modules_by_block(self.tgt_state, self.src_states_list, ratio=self.transfer_ratio)
+        self.groups = self._group_modules_by_block(
+            self.tgt_state,
+            self.src_states_list,
+            ratio=self.transfer_ratio,
+            alignment_mode=self.layer_alignment
+        )
         
         self.param_groups = []
         self.active_groups = {} 
@@ -178,7 +211,8 @@ class HeteroFusionTrainer:
                 all_src_s.append(torch.cat(curr_src_s_list, dim=0))
                 
                 group['reconstruct_info'].append({
-                    'orig_rows': tB.shape[0],
+                    'orig_rows_A': tA_transposed.shape[0],
+                    'orig_rows_B': tB.shape[0],
                     'num_blocks_B': tB_blocks.shape[0],
                     'num_blocks_A': tA_blocks.shape[0] 
                 })
@@ -201,7 +235,46 @@ class HeteroFusionTrainer:
                 group['batched'] = False
             torch.cuda.empty_cache()
 
-    def _group_modules_by_block(self, tgt_state, src_states_list, ratio=1.0):
+    def _build_layer_pairs(self, tgt_layer_count, src_layer_count, ratio, alignment_mode):
+        overlap = min(tgt_layer_count, src_layer_count)
+        if overlap <= 0:
+            return []
+
+        keep_count = max(1, int(overlap * ratio))
+        keep_count = min(keep_count, overlap)
+
+        if alignment_mode == "tail":
+            tgt_start = tgt_layer_count - overlap
+            src_start = src_layer_count - overlap
+            all_pairs = [(tgt_start + idx, src_start + idx) for idx in range(overlap)]
+            return all_pairs[-keep_count:]
+
+        if alignment_mode in {"head", "naive"}:
+            return [(idx, idx) for idx in range(keep_count)]
+
+        if alignment_mode == "uniform":
+            if keep_count == 1:
+                return [(tgt_layer_count - 1, src_layer_count - 1)]
+
+            tgt_positions = [
+                int(round(idx * (tgt_layer_count - 1) / (keep_count - 1)))
+                for idx in range(keep_count)
+            ]
+            src_positions = [
+                int(round(idx * (src_layer_count - 1) / (keep_count - 1)))
+                for idx in range(keep_count)
+            ]
+            return list(zip(tgt_positions, src_positions))
+
+        raise ValueError(f"Unsupported alignment_mode={alignment_mode}")
+
+    def _get_runtime_lora_weight(self, module, lora_attr):
+        lora_layer = getattr(module, lora_attr)
+        if hasattr(lora_layer, 'default'):
+            return lora_layer.default.weight
+        return lora_layer.weight
+
+    def _group_modules_by_block(self, tgt_state, src_states_list, ratio=1.0, alignment_mode="tail"):
         groups = {}
         tgt_keys = [k for k in tgt_state.keys() if "lora_B" in k]
         
@@ -210,23 +283,20 @@ class HeteroFusionTrainer:
             return max(indices) + 1 if indices else 0 
         
         tgt_layer_count = get_max_layer(tgt_keys)
-        # Build per-source tail-alignment plan so heterogeneous source backbones
+        # Build per-source alignment plans so heterogeneous source backbones
         # (e.g., Qwen + Mistral) can be aligned independently.
         src_align_plans = []
         for s_state in src_states_list:
             src_layer_count = get_max_layer(s_state.keys())
-            layer_offset = tgt_layer_count - src_layer_count
-            valid_layer_pairs = [
-                (t_idx, t_idx - layer_offset)
-                for t_idx in range(tgt_layer_count)
-                if 0 <= t_idx - layer_offset < src_layer_count
-            ]
-            keep_count = max(1, int(len(valid_layer_pairs) * ratio))
-            valid_tgt_indices = set(p[0] for p in valid_layer_pairs[-keep_count:])
+            layer_pairs = self._build_layer_pairs(
+                tgt_layer_count,
+                src_layer_count,
+                ratio=ratio,
+                alignment_mode=alignment_mode
+            )
             src_align_plans.append({
                 'state': s_state,
-                'layer_offset': layer_offset,
-                'valid_tgt_indices': valid_tgt_indices,
+                'layer_map': dict(layer_pairs),
             })
 
         for tgt_key_B in tgt_keys:
@@ -238,11 +308,11 @@ class HeteroFusionTrainer:
             
             layer_src_A, layer_src_B = [], []
             for plan in src_align_plans:
-                if tgt_layer_idx not in plan['valid_tgt_indices']:
+                if tgt_layer_idx not in plan['layer_map']:
                     continue
 
                 s_state = plan['state']
-                src_layer_idx = tgt_layer_idx - plan['layer_offset']
+                src_layer_idx = plan['layer_map'][tgt_layer_idx]
                 src_search_pattern = f"layers.{src_layer_idx}.{suffix}"
                 src_key_B = next((k for k in s_state.keys() if src_search_pattern in k), None)
                 if src_key_B:
@@ -346,21 +416,34 @@ class HeteroFusionTrainer:
                         ref_module = mod_data['ref_module']
                         info = group['reconstruct_info'][i]
                         
-                        start_idx = info['num_blocks_A']
-                        count = info['num_blocks_B']
-                        delta_B = delta_flat[i][start_idx : start_idx + count]
-                        
-                        curr_delta = delta_B.view(-1, self.block_size, hypernet.rank)
-                        curr_delta = curr_delta.view(-1, hypernet.rank)
-                        curr_delta = curr_delta[:info['orig_rows'], :]
-                        
-                        if hasattr(ref_module.lora_B, 'default'): orig_B = ref_module.lora_B.default.weight
-                        else: orig_B = ref_module.lora_B.weight
-                        
-                        if group['alpha'].dtype != curr_delta.dtype: group['alpha'].data = group['alpha'].data.to(curr_delta.dtype)
-                        
-                        update_term = group['alpha'] * curr_delta
-                        full_patch_dict[clean_name] = orig_B + update_term.to(orig_B.device)
+                        start_idx_A = 0
+                        count_A = info['num_blocks_A']
+                        start_idx_B = count_A
+                        count_B = info['num_blocks_B']
+
+                        curr_patch = {}
+
+                        if self.update_a:
+                            delta_A = delta_flat[i][start_idx_A : start_idx_A + count_A]
+                            curr_delta_A = delta_A.view(-1, self.block_size, hypernet.rank)
+                            curr_delta_A = curr_delta_A.view(-1, hypernet.rank)
+                            curr_delta_A = curr_delta_A[:info['orig_rows_A'], :].t().contiguous()
+                            orig_A = self._get_runtime_lora_weight(ref_module, "lora_A")
+                            if group['alpha'].dtype != curr_delta_A.dtype:
+                                group['alpha'].data = group['alpha'].data.to(curr_delta_A.dtype)
+                            curr_patch["lora_A"] = orig_A + (group['alpha'] * curr_delta_A).to(orig_A.device)
+
+                        if self.update_b:
+                            delta_B = delta_flat[i][start_idx_B : start_idx_B + count_B]
+                            curr_delta_B = delta_B.view(-1, self.block_size, hypernet.rank)
+                            curr_delta_B = curr_delta_B.view(-1, hypernet.rank)
+                            curr_delta_B = curr_delta_B[:info['orig_rows_B'], :]
+                            orig_B = self._get_runtime_lora_weight(ref_module, "lora_B")
+                            if group['alpha'].dtype != curr_delta_B.dtype:
+                                group['alpha'].data = group['alpha'].data.to(curr_delta_B.dtype)
+                            curr_patch["lora_B"] = orig_B + (group['alpha'] * curr_delta_B).to(orig_B.device)
+
+                        full_patch_dict[clean_name] = curr_patch
                         module_map_ref[clean_name] = ref_module
                 
                 if full_patch_dict:
@@ -418,22 +501,36 @@ class HeteroFusionTrainer:
                     
                     key_A = f"base_model.model.{clean_name}.lora_A.weight"
                     key_B = f"base_model.model.{clean_name}.lora_B.weight"
-                    
-                    final_state_dict[key_A] = mod_data['tA'].clone().cpu()
-                    
-                    target_dtype = mod_data['tB'].dtype
+
+                    target_dtype_A = mod_data['tA'].dtype
+                    target_dtype_B = mod_data['tB'].dtype
+                    orig_A = mod_data['tA'].to(self.device)
                     orig_B = mod_data['tB'].to(self.device)
-                    
-                    start_idx = info['num_blocks_A']
-                    count = info['num_blocks_B']
-                    delta_B = delta_flat[i][start_idx : start_idx + count]
-                    
-                    curr_delta = delta_B.view(-1, self.block_size, hypernet.rank)
-                    curr_delta = curr_delta.view(-1, hypernet.rank)
-                    curr_delta = curr_delta[:info['orig_rows'], :]
-                    
-                    final_B = orig_B + group['alpha'] * curr_delta
-                    final_state_dict[key_B] = final_B.clone().to(target_dtype).cpu()
+
+                    start_idx_A = 0
+                    count_A = info['num_blocks_A']
+                    start_idx_B = count_A
+                    count_B = info['num_blocks_B']
+
+                    final_A = orig_A
+                    final_B = orig_B
+
+                    if self.update_a:
+                        delta_A = delta_flat[i][start_idx_A : start_idx_A + count_A]
+                        curr_delta_A = delta_A.view(-1, self.block_size, hypernet.rank)
+                        curr_delta_A = curr_delta_A.view(-1, hypernet.rank)
+                        curr_delta_A = curr_delta_A[:info['orig_rows_A'], :].t().contiguous()
+                        final_A = orig_A + group['alpha'] * curr_delta_A
+
+                    if self.update_b:
+                        delta_B = delta_flat[i][start_idx_B : start_idx_B + count_B]
+                        curr_delta_B = delta_B.view(-1, self.block_size, hypernet.rank)
+                        curr_delta_B = curr_delta_B.view(-1, hypernet.rank)
+                        curr_delta_B = curr_delta_B[:info['orig_rows_B'], :]
+                        final_B = orig_B + group['alpha'] * curr_delta_B
+
+                    final_state_dict[key_A] = final_A.clone().to(target_dtype_A).cpu()
+                    final_state_dict[key_B] = final_B.clone().to(target_dtype_B).cpu()
             
             for k, v in self.tgt_state.items():
                 clean_name = self._clean_name(k)

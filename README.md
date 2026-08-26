@@ -2,147 +2,270 @@
 
 **Can Heterogeneous Language Models Be Fused?**
 
-HeteroFusion is an adapter-space fusion framework for transferring and consolidating task knowledge across heterogeneous language model families such as Llama, Qwen, and Mistral. Instead of assuming a shared backbone or directly averaging incompatible weights, HeteroFusion aligns source and target adapters by functional topology, filters conflicting transfer signals, and predicts structured updates for the target adapter.
+Paper: [arXiv:2604.01674](https://arxiv.org/abs/2604.01674)
+
+HeteroFusion is a research code release for adapter-space fusion across
+heterogeneous language-model families. It learns structured updates for a
+target LoRA adapter by reading one or more source LoRA adapters from different
+backbones, aligning modules by layer topology, and optimizing the fused adapter
+on lightweight replay data.
+
+The current repository is a sanitized release: it contains the fusion code,
+experiment configs, replay/evaluation utilities, figures, and small released
+datasets. It does not include base model weights, LoRA adapter weights, training
+outputs, logs, or private machine-specific artifacts.
 
 <p align="center">
   <img src="assets/framework.png" alt="HeteroFusion framework" width="88%">
 </p>
 
-## Overview
+## What Is Included
 
-Most model merging methods work only when all experts come from the same pretrained family. HeteroFusion targets the more realistic setting where useful experts are heterogeneous.
+- HeteroFusion entry point: `main.py`
+- Fusion model, trainer, and regularizer: `src/model.py`, `src/trainer.py`,
+  `src/losses.py`
+- Dataset loader wrapper around the vendored LLaMA-Factory utilities: `data.py`
+- GENOME 1+9 reproduction config:
+  `configs/heterofusion/genome_1p9/llama_code_target_gemma9_sources.yaml`
+- GENOME six-task validation/test data under `data/genome_tasks/`
+- Generated GENOME mixed validation replay set under `data/genome_valid_mix_1p9/`
+- Broader paper experiment configs under
+  `configs/heterofusion/paper_experiments/`
+- Sample replay data under `data/sample/`
+- Helper scripts for GENOME replay construction, fusion, and evaluation
+- README figures under `assets/`
 
-HeteroFusion has three core ideas:
+## What Is Not Included
 
-- **Topology-Based Alignment** maps compatible modules across heterogeneous backbones instead of relying on raw tensor-coordinate matching.
-- **Conflict-Aware Denoising** uses SVD-guided sparse gating and distribution regularization to suppress noisy or contradictory source signals.
-- **Target-Basis Preservation** keeps the target LoRA `A` matrices fixed and only predicts structured updates for the target `B` matrices, making transfer more stable and controllable.
+- Base model checkpoints
+- PEFT LoRA adapter weights
+- Fused/merged output adapters
+- Optimizer states or trainer checkpoints
+- Inference results, logs, caches, and local absolute paths
+- The external GENOME evaluator repository
 
-The training loop dynamically patches predicted LoRA updates into the target adapter, optimizes them on a lightweight mixed replay set, and exports a single fused adapter at the end.
-
-## What This Repository Contains
-
-- The HeteroFusion training pipeline in [`main.py`](main.py) and [`src/`](src)
-- Paper experiment configs in [`configs/heterofusion/paper_experiments/`](configs/heterofusion/paper_experiments)
-- Lightweight sample replay data in [`data/sample/`](data/sample)
-- Experiment runner scripts for the main paper settings
-- Paper figures adapted for GitHub rendering in [`assets/`](assets)
+Adapters are intentionally absent. The `adapters/` directory is kept only as a
+documented mount point; see `adapters/README.md` for the expected checkpoint
+layout.
 
 ## Repository Layout
 
 ```text
 HeteroFusion/
-├── assets/                               # Figures used in the README
-├── configs/heterofusion/paper_experiments/
-│   ├── single_source_qwen_to_llama/      # Main UIE transfer setting
-│   ├── multi_source_cross_family/        # Multi-source heterogeneous fusion
-│   ├── noise_robustness/                 # Noisy-source robustness
-│   ├── glue_cross_family/                # Cross-family GLUE evaluation
-│   ├── sensitivity_alpha/               # Alpha sweeps
-│   └── sensitivity_mu_gate/             # mu_gate sweeps
-├── data/sample/                          # 300-example replay subsets
-├── llamafactory/                         # Local code dependency used for data/model utilities
-├── src/
-│   ├── model.py                          # Transfer network and denoising blocks
-│   ├── trainer.py                        # Dynamic patching + fusion optimization
-│   └── losses.py                         # RDM regularization
-├── main.py                               # Pipeline entry point
-├── run_paper_single_source_qwen_to_llama.sh
-├── run_paper_glue_cross_family.sh
-├── run_paper_hyperparameter_sweep.sh
-└── docs/
+├── adapters/                         # Mount point for external LoRA adapters
+├── assets/                           # Figures used in this README
+├── configs/heterofusion/
+│   ├── genome_1p9/                   # Sanitized GENOME 1+9 config
+│   └── paper_experiments/            # Paper configs and ablation sweeps
+├── data/
+│   ├── genome_tasks/                 # Released GENOME valid/test task data
+│   ├── genome_valid_mix_1p9/          # Generated six-task replay mix
+│   └── sample/                       # Lightweight sample replay data
+├── llamafactory/                     # Vendored utilities used by this release
+├── src/                              # HeteroFusion transfer network/trainer
+├── tools/                            # Dataset and GENOME evaluation helpers
+├── data.py                           # Mixed-dataset builder
+├── main.py                           # Fusion pipeline entry point
+├── run_genome_heterofusion_1p9.sh     # End-to-end GENOME helper script
+└── run_paper_*.sh                    # Paper experiment launch helpers
 ```
 
-## Setup
+## Method Components In This Code
 
-The current release is organized as a research codebase rather than a packaged library. A minimal environment that matches the top-level imports is:
+`HeteroFusionTransferNet` in `src/model.py` is the learnable transfer module. It
+encodes LoRA `A` and `B` blocks, applies SVD-guided conflict-aware gating, uses
+topology-aligned attention from target blocks to source blocks, and decodes
+adapter deltas.
+
+`HeteroFusionTrainer` in `src/trainer.py` loads target/source LoRA states,
+aligns heterogeneous source layers to target layers with `tail`, `head`,
+`uniform`, or `naive` strategies, dynamically patches predicted LoRA weights
+into the target model during optimization, and exports a final PEFT adapter to
+`merged_lora/`.
+
+The supported update modes are:
+
+- `b_only`: preserve target LoRA `A` and update `B`
+- `a_only`: update target LoRA `A`
+- `ab_joint`: update both target LoRA matrices
+
+## Environment
+
+This release is not packaged as a pip library. A practical starting environment
+is:
 
 ```bash
-conda create -n heterofusion python=3.10 -y
-conda activate heterofusion
+conda create -n infer_train python=3.10 -y
+conda activate infer_train
 pip install --upgrade pip
 pip install torch torchvision torchaudio
 pip install transformers peft safetensors pyyaml fire tqdm numpy datasets accelerate sentencepiece scipy einops
 ```
 
-This repository also vendors local utilities from `llamafactory/`. If your environment differs from the one used in the paper, you may need a few extra upstream Llama-Factory dependencies depending on your tokenizer, model family, or dataset pipeline.
+The `run_genome_heterofusion_1p9.sh` script uses `conda run -n infer_train`.
+Rename the environment in that script or create the environment with this name.
 
-## Required Paths
+GENOME evaluation additionally expects a working vLLM-based GENOME evaluator
+environment. Put that repository at `external/GENOME` or set `GENOME_ROOT`.
 
-Configs use environment variables so the same YAML files can be reused across machines:
+## Required External Paths
+
+Set a base-model root:
 
 ```bash
 export MODEL_ROOT=/path/to/base_models
-export ADAPTER_ROOT=/path/to/lora_experts
 ```
 
-Each adapter directory is expected to contain:
+The GENOME 1+9 config expects:
 
-- `adapter_config.json`
-- `adapter_model.safetensors` or `adapter_model.bin`
+```text
+${MODEL_ROOT}/llama-3.1-8b-instruct
+```
 
-## Data
-
-The repository includes lightweight sample replay sets under [`data/sample/`](data/sample). These are the 300-example subsets referenced in the paper for replay-based fusion experiments.
-
-The following assets are **not** bundled in this repository:
-
-- full pretrained base models
-- all source and target LoRA experts
-- full benchmark datasets
-
-You should prepare these according to the corresponding model and dataset licenses before public release.
-
-## Quick Start
-
-Run one paper configuration directly:
+Set an adapter root, or place adapters inside this repo's `adapters/` directory:
 
 ```bash
-python main.py --config_path configs/heterofusion/paper_experiments/single_source_qwen_to_llama/llama_target_mit_movie.yaml
+export ADAPTER_ROOT=/path/to/heterofusion_adapters
 ```
 
-Run the single-source paper sweep:
+If `ADAPTER_ROOT` is unset, `main.py` resolves `${ADAPTER_ROOT}` to
+`./adapters`.
+
+Each adapter directory must contain a standard PEFT LoRA checkpoint:
+
+```text
+adapter_config.json
+adapter_model.safetensors   # or adapter_model.bin
+```
+
+For the released GENOME 1+9 config, the required adapter layout is:
+
+```text
+${ADAPTER_ROOT}/
+  llama3.1-8b-instruct/
+    GENOME/
+      code_alpaca_fast/
+  gemma-2-2b-it/
+    GENOME/
+      cot/
+      flan_v2/
+      gpt4_alpaca/
+      lima/
+      oasst1/
+      open_orca/
+      science_literature/
+      sharegpt/
+      wizardlm/
+```
+
+## GENOME 1+9 Quick Start
+
+Build or refresh the released six-task validation replay mix:
+
+```bash
+python tools/build_genome_valid_mix_dataset.py
+```
+
+Run HeteroFusion training for the GENOME 1+9 config:
+
+```bash
+python main.py configs/heterofusion/genome_1p9/llama_code_target_gemma9_sources.yaml
+```
+
+The fused adapter is written to:
+
+```text
+outputs/genome_1p9/llama_code_target_gemma9_sources/genome_1p9_valid_mix_tail_b_only/merged_lora/
+```
+
+To run the bundled end-to-end helper, including replay construction, training,
+and six GENOME test evaluations:
+
+```bash
+export MODEL_ROOT=/path/to/base_models
+export ADAPTER_ROOT=/path/to/heterofusion_adapters
+export GENOME_ROOT=/path/to/GENOME
+CUDA_VISIBLE_DEVICES=0 bash run_genome_heterofusion_1p9.sh
+```
+
+The script writes logs under `logs/genome_1p9/` and evaluation outputs under
+`infer_results/GENOME_1P9_LLAMA_CODE_GEMMA9_TEST6/`.
+
+## Running Other Paper Configs
+
+The broader paper configs are available under:
+
+```text
+configs/heterofusion/paper_experiments/
+```
+
+They cover:
+
+- single-source Qwen-to-Llama transfer
+- multi-source cross-family fusion
+- noisy-source robustness
+- GLUE cross-family transfer
+- alignment and update-mode ablations
+- `alpha` and `mu_gate` sensitivity sweeps
+
+Run any config with:
+
+```bash
+python main.py path/to/config.yaml
+```
+
+These configs use the same `${MODEL_ROOT}` and `${ADAPTER_ROOT}` convention.
+Only the model and adapter paths referenced by the config you run are required.
+Some paper configs also depend on the sample replay datasets in `data/sample/`.
+
+The shell helpers are:
 
 ```bash
 bash run_paper_single_source_qwen_to_llama.sh
-```
-
-Run the GLUE cross-family setting:
-
-```bash
 bash run_paper_glue_cross_family.sh
+bash run_paper_hyperparameter_sweep.sh
+bash run_paper_main_ablation_qwen_to_llama.sh
 ```
 
-Run the alpha sweep:
+Review each script before launching on a new machine, because GPU assignment,
+environment names, output directories, and skip/dry-run behavior are controlled
+inside the scripts and by environment variables.
+
+## GENOME Evaluation Helper
+
+Evaluate a base model or fused LoRA on one GENOME task:
 
 ```bash
-bash run_paper_hyperparameter_sweep.sh
+python tools/run_genome_merged_eval.py \
+  --model-path "${MODEL_ROOT}/llama-3.1-8b-instruct" \
+  --lora-path outputs/genome_1p9/llama_code_target_gemma9_sources/genome_1p9_valid_mix_tail_b_only/merged_lora \
+  --task gsm8k \
+  --split test \
+  --output-dir infer_results/gsm8k \
+  --work-dir /tmp/heterofusion_genome_eval_gsm8k
 ```
 
-The shell runners support options such as `DRY_RUN=1`, `SKIP_FINISHED=1`, and GPU assignment controls. See the scripts for details.
+Supported released GENOME task names are:
 
-## Paper Settings Covered by the Configs
+```text
+mmlupro, gsm8k, mbpp, drop, flores37, emorynlp
+```
 
-- **Single-source heterogeneous transfer**:
-  [`configs/heterofusion/paper_experiments/single_source_qwen_to_llama/`](configs/heterofusion/paper_experiments/single_source_qwen_to_llama)
-- **Multi-source cross-family fusion**:
-  [`configs/heterofusion/paper_experiments/multi_source_cross_family/`](configs/heterofusion/paper_experiments/multi_source_cross_family)
-- **Noisy-source robustness**:
-  [`configs/heterofusion/paper_experiments/noise_robustness/`](configs/heterofusion/paper_experiments/noise_robustness)
-- **Cross-family GLUE transfer**:
-  [`configs/heterofusion/paper_experiments/glue_cross_family/`](configs/heterofusion/paper_experiments/glue_cross_family)
-- **Sensitivity studies**:
-  [`configs/heterofusion/paper_experiments/sensitivity_alpha/`](configs/heterofusion/paper_experiments/sensitivity_alpha) and
-  [`configs/heterofusion/paper_experiments/sensitivity_mu_gate/`](configs/heterofusion/paper_experiments/sensitivity_mu_gate)
+## Notes On Reproducibility
 
-More detailed reproduction notes are provided in [`docs/REPRODUCE.md`](docs/REPRODUCE.md).
+This repository preserves code and config structure, but exact reproduction
+requires compatible external checkpoints and evaluator versions. In particular:
 
-## Main Results Snapshot
+- `MODEL_ROOT` must point to the target base model used by the config.
+- `ADAPTER_ROOT` must contain the target and source LoRA adapters named in the
+  config.
+- GENOME evaluation requires the external GENOME repository and its vLLM
+  dependencies.
+- Outputs are intentionally ignored by Git through `.gitignore`.
 
-- **Single-source Qwen -> Llama transfer**: HeteroFusion reaches **71.38 average F1**, improving over Llama Merge (**67.60**) and FuseLLM (**63.15**).
-- **Multi-source Qwen + Mistral -> Llama transfer**: HeteroFusion reaches **71.31 average F1**.
-- **Noisy-source robustness**: HeteroFusion maintains **70.55 average F1** under task-irrelevant source experts.
-- **GLUE cross-family transfer**: HeteroFusion reaches **82.58 average score**.
+## Results Figures
+
+The repository includes static figures used for documentation.
 
 <p align="center">
   <img src="assets/noise_avg_metrics.png" alt="Noise robustness" width="47%">
@@ -153,32 +276,19 @@ More detailed reproduction notes are provided in [`docs/REPRODUCE.md`](docs/REPR
   <img src="assets/sensitivity.png" alt="Sensitivity analysis" width="70%">
 </p>
 
-## Release Notes Before Public GitHub Launch
-
-This repository now contains the open-source documentation skeleton, but a few project-specific fields should still be finalized before the public launch:
-
-- replace placeholder citation metadata with the public author list and arXiv link
-- choose and add a repository license
-- verify redistribution permissions for vendored code, datasets, adapters, and sample data
-- optionally separate the paper source tree from the code release tree
-
 ## Citation
 
-Please update the metadata below before the public release if the paper record changes.
-
 ```bibtex
-@article{chen2026heterogeneousfused,
-      title={Can Heterogeneous Language Models Be Fused?}, 
-      author={Shilian Chen and Jie Zhou and Qin Chen and Wen Wu and Xin Li and Qi Feng and Liang He},
-      year={2026},
-      eprint={2604.01674},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2604.01674}, 
+@article{heterofusion2026,
+  title   = {Can Heterogeneous Language Models Be Fused?},
+  author  = {Chen, Shilian and Zhou, Jie and Chen, Qin and Wu, Wen and Li, Xin and Feng, Qi and He, Liang},
+  journal = {arXiv preprint arXiv:2604.01674},
+  year    = {2026}
 }
 ```
 
 ## Acknowledgements
 
-- [Llama-Factory](https://github.com/hiyouga/LLaMA-Factory) for the training and data-processing foundation used to prepare experts
+- LLaMA-Factory for the data/model utility foundation vendored in this release
 - Hugging Face Transformers and PEFT for model and adapter tooling
+- The GENOME benchmark/evaluator for the six-task evaluation workflow

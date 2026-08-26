@@ -1,0 +1,45 @@
+experiment_name: genome_1p9_llama_code_target_gemma9_sources
+output_dir: outputs/genome_1p9/llama_code_target_gemma9_sources
+base_model_path: ${MODEL_ROOT}/llama-3.1-8b-instruct
+initial_target_lora: ${ADAPTER_ROOT}/llama3.1-8b-instruct/GENOME/code_alpaca_fast
+data_global:
+  dataset_dir: data
+  template: llama3
+  cutoff_len: 2048
+  batch_size: 1
+  num_workers: 4
+tasks:
+- task_name: genome_1p9_valid_mix_tail_b_only
+  source_lora_paths:
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/cot
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/flan_v2
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/gpt4_alpaca
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/lima
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/oasst1
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/open_orca
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/science_literature
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/sharegpt
+  - ${ADAPTER_ROOT}/gemma-2-2b-it/GENOME/wizardlm
+  transfer_ratio: '1'
+  layer_alignment: tail
+  datasets:
+  - name: genome_valid_mix_6tasks
+    type: main
+  training:
+    fusion_group_name: heterofusion_genome_1p9_tail_b_only
+    embed_dim: 1024
+    num_heads: 8
+    max_position_embeddings: 4096
+    num_epochs: 3
+    lr: 5.0e-05
+    alpha_init: 0.3
+    gradient_accumulation_steps: 8
+    mu_gate: 0.1
+    lambda_reg: 0.005
+    mu_target: 0.0
+    sigma_target: 1.0
+    num_projections: 2048
+    update_mode: b_only
+    seed: 42
+    variant_note: "GENOME 1+9: LLaMA code_alpaca_fast target, Gemma sources excluding code_alpaca; paper defaults."
+  seed: 42
