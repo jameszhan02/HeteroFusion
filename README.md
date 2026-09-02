@@ -231,6 +231,37 @@ Review each script before launching on a new machine, because GPU assignment,
 environment names, output directories, and skip/dry-run behavior are controlled
 inside the scripts and by environment variables.
 
+## Checkpoint Conversion Utilities
+
+Approximate a full fine-tuned checkpoint as a rank-16 PEFT LoRA adapter:
+
+```bash
+python tools/full_model_delta_to_lora.py \
+  --base-model /path/to/base_model \
+  --trained-model /path/to/full_finetuned_model \
+  --output-dir adapters/converted_r16 \
+  --rank 16 \
+  --lora-alpha 16 \
+  --dtype bfloat16 \
+  --device cuda:0
+```
+
+Merge one PEFT LoRA adapter back into its base model and save a standalone
+full-weight Hugging Face checkpoint:
+
+```bash
+python tools/merge_lora_to_full_model.py \
+  --base-model /path/to/base_model \
+  --adapter adapters/converted_r16 \
+  --output-dir /path/to/merged_full_model \
+  --dtype bfloat16 \
+  --device cuda:0
+```
+
+The merge utility saves safetensors shards and tokenizer files. For safety, it
+refuses to write into a non-empty output directory or overwrite the base model
+or adapter directory.
+
 ## GENOME Evaluation Helper
 
 Evaluate a base model or fused LoRA on one GENOME task:
