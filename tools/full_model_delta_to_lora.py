@@ -8,6 +8,46 @@ import torch
 import torch.nn as nn
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import modeling_utils as transformers_modeling_utils
+
+
+class _SafeOpenWithPyTorchMetadataFallback:
+    """Wrap safetensors.safe_open and supply missing HF format metadata."""
+
+    def __init__(self, safe_open_impl, *args, **kwargs):
+        self._inner = safe_open_impl(*args, **kwargs)
+        self._reader = None
+
+    def __enter__(self):
+        self._reader = self._inner.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return self._inner.__exit__(exc_type, exc_value, traceback)
+
+    def metadata(self):
+        metadata = self._reader.metadata()
+        if metadata is None:
+            print("[WARN] Safetensors metadata is missing; assuming format='pt'.")
+            return {"format": "pt"}
+        return metadata
+
+    def __getattr__(self, name):
+        return getattr(self._reader, name)
+
+
+def load_causal_lm(path, *, torch_dtype):
+    """Load an HF model while accepting metadata-less PyTorch safetensors."""
+    original_safe_open = transformers_modeling_utils.safe_open
+
+    def safe_open_with_fallback(*args, **kwargs):
+        return _SafeOpenWithPyTorchMetadataFallback(original_safe_open, *args, **kwargs)
+
+    transformers_modeling_utils.safe_open = safe_open_with_fallback
+    try:
+        return AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch_dtype)
+    finally:
+        transformers_modeling_utils.safe_open = original_safe_open
 
 
 DEFAULT_TARGET_MODULES = (
@@ -170,9 +210,9 @@ def main():
     device = torch.device(args.device)
 
     print(f"[INFO] Loading base model: {args.base_model}")
-    base_model = AutoModelForCausalLM.from_pretrained(args.base_model, torch_dtype=torch_dtype).to(device)
+    base_model = load_causal_lm(args.base_model, torch_dtype=torch_dtype).to(device)
     print(f"[INFO] Loading fine-tuned model: {args.trained_model}")
-    trained_model = AutoModelForCausalLM.from_pretrained(args.trained_model, torch_dtype=torch_dtype).to(device)
+    trained_model = load_causal_lm(args.trained_model, torch_dtype=torch_dtype).to(device)
 
     base_weights = collect_linear_weights(base_model, target_modules)
     trained_weights = collect_linear_weights(trained_model, target_modules)
