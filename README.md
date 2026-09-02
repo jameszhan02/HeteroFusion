@@ -262,6 +262,21 @@ The merge utility saves safetensors shards and tokenizer files. For safety, it
 refuses to write into a non-empty output directory or overwrite the base model
 or adapter directory.
 
+Convert raw GSM8K JSON/JSONL records into the LLaMA-Factory SFT format and
+register the result in `data/dataset_info.json`:
+
+```bash
+python tools/prepare_gsm8k_fusion_dataset.py \
+  --input data/genome_tasks/gsm8k/valid.json \
+  --output data/gsm8k_fusion/gsm8k_fusion_200.json \
+  --dataset-info data/dataset_info.json \
+  --dataset-name gsm8k_fusion_200
+```
+
+The converter preserves GSM8K reasoning, removes `<<calculation=result>>`
+annotations by default, and writes the final answer as `Answer: ...`. Use
+`--no-reasoning` when only the final answer should be supervised.
+
 ## GENOME Evaluation Helper
 
 Evaluate a base model or fused LoRA on one GENOME task:
