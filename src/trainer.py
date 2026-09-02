@@ -54,7 +54,12 @@ class HeteroFusionTrainer:
         self.dataloader = train_dataloader
         self.lpka_cache = lpka_cache if lpka_cache is not None else {}
         
-        self.block_size = 4096 
+        # Number of rows in each LoRA block processed by the transfer network.
+        # Keep 4096 as the backward-compatible default, but allow experiments
+        # to lower it (e.g. 512/1024 for rank-64 adapters) to reduce memory.
+        self.block_size = int(config['training'].get('block_size', 4096))
+        if self.block_size <= 0:
+            raise ValueError(f"block_size must be positive, got {self.block_size}")
         self.embed_dim = int(config['training'].get('embed_dim', 1024))
         self.num_heads = int(config['training'].get('num_heads', 8))
         self.max_pos_embeddings = int(config['training'].get('max_position_embeddings', 4096))
@@ -113,7 +118,10 @@ class HeteroFusionTrainer:
         for group_id, group in self.groups.items():
             if not group['modules']: continue
             module_type, rank = group_id
-            cache_key = f"{group_name_prefix}_{module_type}_{rank}"
+            # The transfer-net input/output dimensions depend on block_size;
+            # include it in the cache key so experiments with different block
+            # sizes cannot accidentally reuse an incompatible network.
+            cache_key = f"{group_name_prefix}_{module_type}_{rank}_block{self.block_size}"
 
             if cache_key in self.lpka_cache:
                 print(f"♻️  Reusing transfer net for [{module_type}] R={rank}")
