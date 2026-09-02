@@ -53,6 +53,10 @@ class HeteroFusionTrainer:
         self.device = device
         self.dataloader = train_dataloader
         self.lpka_cache = lpka_cache if lpka_cache is not None else {}
+        # FLOPs counters are analytical estimates (forward + backward), not
+        # profiler measurements. They are kept per task/trainer instance.
+        self.transfer_forward_flops = 0
+        self.target_forward_flops = 0
         
         # Number of rows in each LoRA block processed by the transfer network.
         # Keep 4096 as the backward-compatible default, but allow experiments
@@ -179,6 +183,68 @@ class HeteroFusionTrainer:
             pad_len = target_len - rows
             tensor = F.pad(tensor, (0, 0, 0, pad_len), "constant", 0)
         return tensor.view(num_blocks, block_size, rank)
+
+    @staticmethod
+    def _linear_flops(batch, tokens, in_features, out_features):
+        """Multiply-add FLOPs for a dense layer (counts multiply and add)."""
+        return 2 * int(batch) * int(tokens) * int(in_features) * int(out_features)
+
+    def _estimate_transfer_forward_flops(self, hypernet, tgt_flat, src_flat):
+        """Estimate one HeteroFusion transfer-net forward pass."""
+        e = hypernet.encoder
+        a = hypernet.attention
+        d = hypernet.decoder_layer
+        embed = e.fusion_norm.normalized_shape[0]
+        flat = e.flat_dim
+        rank = e.rank
+        gate_hidden = embed // 4
+
+        def encoder_cost(x):
+            b, n, _ = x.shape
+            cost = 2 * b * n * flat * 5  # input LayerNorm (approx.)
+            cost += self._linear_flops(b, n, flat, embed) * 2  # row + col projections
+            cost += 8 * b * n * embed * 2  # two GELUs (approx.)
+            cost += self._linear_flops(b, n, rank, gate_hidden)
+            cost += self._linear_flops(b, n, gate_hidden, embed)
+            cost += 2 * b * n * (gate_hidden + embed)  # ReLU, gate multiply
+            cost += 5 * b * n * embed  # fusion LayerNorm (approx.)
+            return cost
+
+        bt, nt, _ = tgt_flat.shape
+        bs, ns, _ = src_flat.shape
+        cost = encoder_cost(tgt_flat) + encoder_cost(src_flat)
+        # Q/K/V/out projections.
+        cost += self._linear_flops(bt, nt, embed, embed) * 3
+        cost += self._linear_flops(bt, nt, embed, embed)
+        # Attention score/value matmuls and softmax (approximate).
+        heads = a.num_heads
+        head_dim = a.head_dim
+        cost += 4 * bt * heads * nt * ns * head_dim
+        cost += 5 * bt * heads * nt * ns
+        # Decoder: Linear(embed, embed), GELU, Linear(embed, flat).
+        cost += self._linear_flops(bt, nt, embed, embed)
+        cost += 8 * bt * nt * embed
+        cost += self._linear_flops(bt, nt, embed, flat)
+        return int(cost)
+
+    def _estimate_target_forward_flops(self, batch):
+        """Approximate target-model forward FLOPs as 2 * params * tokens."""
+        input_ids = batch.get("input_ids")
+        if input_ids is None:
+            return 0
+        tokens = int(input_ids.numel())
+        params = sum(p.numel() for p in self.base_model.parameters())
+        return int(2 * params * tokens)
+
+    @staticmethod
+    def _format_flops(value):
+        if value >= 1e15:
+            return f"{value / 1e15:.3f} PFLOPs"
+        if value >= 1e12:
+            return f"{value / 1e12:.3f} TFLOPs"
+        if value >= 1e9:
+            return f"{value / 1e9:.3f} GFLOPs"
+        return f"{value / 1e6:.3f} MFLOPs"
 
     def _compute_svd_s(self, tensor_blocks):
         tensor_blocks = tensor_blocks.float()
@@ -398,6 +464,9 @@ class HeteroFusionTrainer:
                     inputs = group['inputs']
                     
                     if group.get('batched', False):
+                        self.transfer_forward_flops += self._estimate_transfer_forward_flops(
+                            hypernet, inputs['tgt_flat'], inputs['src_flat']
+                        )
                         delta_flat, _, tgt_emb, src_emb = hypernet(
                             inputs['tgt_flat'], inputs['tgt_s'], inputs['src_flat'], inputs['src_s']
                         )
@@ -407,6 +476,9 @@ class HeteroFusionTrainer:
                     else:
                         outs, per_item_rdm = [], []
                         for tf, ts, sf, ss in zip(inputs['tgt_flat'], inputs['tgt_s'], inputs['src_flat'], inputs['src_s']):
+                            self.transfer_forward_flops += self._estimate_transfer_forward_flops(
+                                hypernet, tf.unsqueeze(0), sf.unsqueeze(0)
+                            )
                             d, _, te, se = hypernet(tf.unsqueeze(0), ts.unsqueeze(0), sf.unsqueeze(0), ss.unsqueeze(0))
                             outs.append(d.squeeze(0))
                             # Variable source counts can make sequence lengths differ across items.
@@ -456,6 +528,7 @@ class HeteroFusionTrainer:
                 
                 if full_patch_dict:
                     with WeightPatcher(module_map_ref, full_patch_dict):
+                        self.target_forward_flops += self._estimate_target_forward_flops(batch)
                         outputs = self.base_model(**batch)
                         lm_loss = outputs.loss
                         
@@ -479,6 +552,16 @@ class HeteroFusionTrainer:
                             alpha=f"{alpha_val:.2e}"
                         )
                 else: break
+        # A standard training step is roughly forward + backward ~= 3x the
+        # forward FLOPs. Report the transfer-net and target-model estimates
+        # separately because the latter is only an architectural estimate.
+        forward_total = self.transfer_forward_flops + self.target_forward_flops
+        training_total = 3 * forward_total
+        print("\nFLOPs estimate for this task:")
+        print(f"  Transfer-network forward: {self._format_flops(self.transfer_forward_flops)}")
+        print(f"  Target-model forward:     {self._format_flops(self.target_forward_flops)}")
+        print(f"  Training total (fwd+bwd):  {self._format_flops(training_total)}")
+        print("  Note: analytical estimate; optimizer/RDM overhead is not included.\n")
         return self._save_merged_lora()
 
     def _save_merged_lora(self):
