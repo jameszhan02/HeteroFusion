@@ -1,12 +1,12 @@
-experiment_name: custom_two_ckpt_heterofusion
-output_dir: outputs/custom/two_ckpt_heterofusion
+experiment_name: llamda3.2_1b_gsm8k_heterfusion
+output_dir: /data/adapters/llamda3.2_1b_heterfusion_r64_gsm8k
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
-base_model_path: "${MODEL_ROOT}/TARGET_BASE_MODEL"
+base_model_path: /data/shared_ckpt/Llama-3.2-1B
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: "${ADAPTER_ROOT}/TARGET_ADAPTER"
+initial_target_lora: /data/adapters/Llama-3.2-chat300-r64
 
 data_global:
   dataset_dir: data
@@ -19,13 +19,13 @@ tasks:
 - task_name: two_ckpt_tail_b_only
   # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
   source_lora_paths:
-  - "${ADAPTER_ROOT}/SOURCE_ADAPTER"
+  - "/data/adapters/OLMo2-1B-teacher-r64"
   transfer_ratio: "1"
   layer_alignment: tail
   datasets:
   # Replace this with replay data that matches your target/source tasks.
   # Dataset names must exist in data/dataset_info.json or data/sample/dataset_info.json.
-  - name: merge
+  - name: gsm8k_fusion_200
     type: main
   training:
     fusion_group_name: custom_two_ckpt_transfer
