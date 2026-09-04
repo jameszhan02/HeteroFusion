@@ -231,36 +231,237 @@ Review each script before launching on a new machine, because GPU assignment,
 environment names, output directories, and skip/dry-run behavior are controlled
 inside the scripts and by environment variables.
 
-## Checkpoint Conversion Utilities
+## Full Model to HeteroFusion to Merged Model
 
-Approximate a full fine-tuned checkpoint as a rank-16 PEFT LoRA adapter:
+The two checkpoint utilities under `tools/` support this end-to-end workflow:
+
+```text
+full fine-tuned model(s)
+        |
+        | tools/full_model_delta_to_lora.py
+        v
+target and source PEFT LoRA adapters
+        |
+        | main.py + a HeteroFusion YAML config
+        v
+fused PEFT LoRA adapter (merged_lora/)
+        |
+        | tools/merge_lora_to_full_model.py
+        v
+standalone full-weight Hugging Face model
+```
+
+Run either utility with `--help` to see all accepted command-line arguments:
 
 ```bash
-python tools/full_model_delta_to_lora.py \
+uv run python tools/full_model_delta_to_lora.py --help
+uv run python tools/merge_lora_to_full_model.py --help
+```
+
+### 1. Extract a LoRA adapter from a full model
+
+`full_model_delta_to_lora.py` computes
+`W_trained - W_base` for the selected linear modules and stores a truncated-SVD
+approximation of that delta as a PEFT LoRA adapter:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 uv run python tools/full_model_delta_to_lora.py \
   --base-model /path/to/base_model \
   --trained-model /path/to/full_finetuned_model \
-  --output-dir adapters/converted_r16 \
-  --rank 16 \
-  --lora-alpha 16 \
-  --dtype bfloat16 \
-  --device cuda:0
+  --output-dir /path/to/adapters/target_r64 \
+  --rank 64 \
+  --lora-alpha 64 \
+  --dtype float32 \
+  --device cuda:0 \
+  --save-tokenizer
 ```
 
-Merge one PEFT LoRA adapter back into its base model and save a standalone
-full-weight Hugging Face checkpoint:
+Each `\` must be the final character on its line. Alternatively, put the whole
+command on one line.
+
+The important arguments are:
+
+- `--base-model`: the exact base checkpoint from which the trained model was
+  fine-tuned.
+- `--trained-model`: the full fine-tuned Hugging Face checkpoint to convert.
+- `--output-dir`: a new directory for `adapter_config.json` and
+  `adapter_model.safetensors`.
+- `--rank`: retained SVD/LoRA rank. Target and source adapters used together by
+  the current HeteroFusion implementation should use the same rank.
+- `--lora-alpha`: PEFT scaling numerator. Setting it equal to `--rank` gives a
+  scaling factor of one.
+- `--target-modules`: optional comma-separated module suffixes. The default is
+  `q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj`.
+- `--dtype`: dtype used to load both checkpoints. Use `float32` for extraction
+  whenever memory permits; subtracting separately rounded bf16 weights can
+  substantially degrade the recovered delta.
+- `--device`: `cuda:0`, another CUDA device, or `cpu`. CPU is slower but can be
+  used when full-precision GPU memory is insufficient.
+- `--save-tokenizer`: also copies the base tokenizer into the adapter directory.
+
+This conversion is **lossy** unless every changed weight is covered by the
+selected modules and every delta matrix has rank no greater than `--rank`.
+Norm, embedding, bias, and LM-head changes are not represented by the default
+conversion. If the original training can be repeated, training PEFT LoRA
+adapters directly is preferable to extracting them from full checkpoints.
+
+Repeat the command for every full model that must become a target or source
+adapter. Always pair each extracted adapter with the base model used in its own
+conversion. Heterogeneous source models may have different base architectures,
+but their adapter rank and compatible module suffixes must match what the
+fusion run expects.
+
+### 2. Configure HeteroFusion
+
+Start from `configs/heterofusion/custom/two_ckpt_merge_template.yaml`. The
+minimum path-related fields are:
+
+```yaml
+experiment_name: llama32_olmo2_gsm8k
+output_dir: /path/to/fusion_outputs/llama32_olmo2_gsm8k
+
+# This is the owner of initial_target_lora and the model exported at the end.
+base_model_path: /path/to/target_base_model
+initial_target_lora: /path/to/adapters/target_r64
+
+data_global:
+  dataset_dir: data
+  template: llama3
+  cutoff_len: 1024
+  batch_size: 1
+  num_workers: 4
+
+tasks:
+- task_name: gsm8k_tail_b_only
+  source_lora_paths:
+  - /path/to/adapters/source_r64
+  transfer_ratio: "1"
+  layer_alignment: tail
+  datasets:
+  - name: gsm8k_fusion_200
+    type: main
+  training:
+    fusion_group_name: llama32_olmo2_r64
+    embed_dim: 1024
+    num_heads: 8
+    max_position_embeddings: 4096
+    num_epochs: 3
+    lr: 5.0e-05
+    alpha_init: 0.3
+    gradient_accumulation_steps: 8
+    mu_gate: 0.1
+    lambda_reg: 0.005
+    mu_target: 0.0
+    sigma_target: 1.0
+    num_projections: 2048
+    update_mode: b_only
+    seed: 42
+  seed: 42
+```
+
+`base_model_path` must be the base belonging to `initial_target_lora`; it is
+also the base used to run and later merge the fused adapter. The dataset name
+must be registered in `data/dataset_info.json` (or the applicable dataset-info
+file). Supported alignment modes are `tail`, `head`, `uniform`, and `naive`.
+Supported update modes are `b_only`, `a_only`, and `ab_joint`.
+
+The LoRA rank is read from each adapter's `adapter_config.json`; it is not set in
+the HeteroFusion YAML. The current fusion encoder expects target and source
+adapter tensors to have a common rank, so use the same extraction/training rank
+for all adapters in one run.
+
+Paths may contain exported environment variables. For example:
+
+```yaml
+base_model_path: ${MODEL_ROOT}/Llama-3.2-1B
+initial_target_lora: ${ADAPTER_ROOT}/Llama-3.2-chat300-r64
+source_lora_paths:
+- ${ADAPTER_ROOT}/OLMo2-1B-teacher-r64
+```
+
+### 3. Start HeteroFusion from the command line
+
+Run a config directly:
 
 ```bash
-python tools/merge_lora_to_full_model.py \
-  --base-model /path/to/base_model \
-  --adapter adapters/converted_r16 \
-  --output-dir /path/to/merged_full_model \
-  --dtype bfloat16 \
-  --device cuda:0
+CUDA_VISIBLE_DEVICES=0 uv run python main.py \
+  configs/heterofusion/custom/two_ckpt_merge_template.yaml
 ```
 
-The merge utility saves safetensors shards and tokenizer files. For safety, it
-refuses to write into a non-empty output directory or overwrite the base model
-or adapter directory.
+Supply path roots and the GPU from the shell without editing the YAML:
+
+```bash
+MODEL_ROOT=/data/shared_ckpt \
+ADAPTER_ROOT=/data/adapters \
+CUDA_VISIBLE_DEVICES=0 \
+uv run python main.py path/to/run_config.yaml
+```
+
+`MODEL_ROOT` and `ADAPTER_ROOT` must be exported or placed before the command as
+shown above so that `main.py` can expand them. `CUDA_VISIBLE_DEVICES` selects
+the visible GPU.
+
+At present, `main.py` accepts the config path but does not implement arbitrary
+nested command-line overrides such as `--training.lr` or `--rank`. To change
+`lr`, `num_epochs`, `update_mode`, `layer_alignment`, or similar experiment
+parameters, make a copy of the YAML, edit that copy, and pass its path:
+
+```bash
+cp configs/heterofusion/custom/two_ckpt_merge_template.yaml \
+  configs/heterofusion/custom/my_run.yaml
+
+# Edit configs/heterofusion/custom/my_run.yaml, then run it.
+CUDA_VISIBLE_DEVICES=0 uv run python main.py \
+  configs/heterofusion/custom/my_run.yaml
+```
+
+For a task named `gsm8k_tail_b_only` and an `output_dir` of
+`/path/to/fusion_outputs/llama32_olmo2_gsm8k`, the final adapter is written to:
+
+```text
+/path/to/fusion_outputs/llama32_olmo2_gsm8k/gsm8k_tail_b_only/merged_lora/
+```
+
+Despite the directory name, `merged_lora/` is still a PEFT adapter, not a
+standalone full model.
+
+### 4. Merge the fused LoRA into its target base model
+
+Use the same target base model specified by `base_model_path` in the fusion
+config:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 uv run python tools/merge_lora_to_full_model.py \
+  --base-model /path/to/target_base_model \
+  --adapter /path/to/fusion_outputs/llama32_olmo2_gsm8k/gsm8k_tail_b_only/merged_lora \
+  --output-dir /path/to/merged_full_model \
+  --dtype bfloat16 \
+  --device cuda:0 \
+  --max-shard-size 5GB
+```
+
+Use `--dtype float32` for the strictest numerical comparison, or `bfloat16` for
+a smaller inference checkpoint. Use `--tokenizer /path/to/tokenizer` if the
+tokenizer should come from somewhere other than the target base. Use
+`--skip-tokenizer` only when the output directory does not need tokenizer
+files.
+
+The output directory must be empty and must not be the base-model or adapter
+directory. The utility saves a standalone Hugging Face checkpoint containing
+safetensors shards, model configuration, generation configuration when
+available, and tokenizer files. It no longer requires the LoRA directory at
+inference time.
+
+As a sanity check, evaluate both of these before deleting or archiving any
+intermediate files:
+
+```text
+target base + fused merged_lora adapter
+standalone merged full model
+```
+
+With identical tokenizer, prompt, dtype, and deterministic decoding, their
+outputs should be the same or differ only because of floating-point rounding.
 
 Convert raw GSM8K JSON/JSONL records into the LLaMA-Factory SFT format and
 register the result in `data/dataset_info.json`:
