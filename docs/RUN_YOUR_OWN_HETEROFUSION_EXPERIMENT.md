@@ -103,9 +103,9 @@ python -m json.tool /path/to/source_lora/adapter_config.json
 
 ```bash
 python tools/full_model_delta_to_lora.py \
-  --base-model /path/to/the_exact_original_base \
-  --trained-model /path/to/full_finetuned_model \
-  --output-dir /path/to/adapters/model_task_r64 \
+  --base-model /data/shared_ckpt/OLMo-2-0425-1B \
+  --trained-model /data/shared_ckpt/opd_teacher \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-Instruct_r64 \
   --rank 64 \
   --lora-alpha 64 \
   --dtype float32 \
@@ -228,68 +228,68 @@ data_global:
   num_workers: 4
 
 tasks:
-- task_name: fuse_source_tasks_tail_b_only
-  source_lora_paths:
-  - ${ADAPTER_ROOT}/source_task_a_r64
-  - ${ADAPTER_ROOT}/source_task_b_r64
+  - task_name: fuse_source_tasks_tail_b_only
+    source_lora_paths:
+      - ${ADAPTER_ROOT}/source_task_a_r64
+      - ${ADAPTER_ROOT}/source_task_b_r64
 
-  # 使用成功对齐层中的 100%；也可写 0.5 或 "1/2"。
-  transfer_ratio: "1"
-  # 可选：tail、head、uniform、naive。
-  layer_alignment: tail
+    # 使用成功对齐层中的 100%；也可写 0.5 或 "1/2"。
+    transfer_ratio: "1"
+    # 可选：tail、head、uniform、naive。
+    layer_alignment: tail
 
-  datasets:
-  # 至少一个 main；这里通常放当前最希望迁移/优化的 source 任务数据。
-  - name: my_source_a_replay
-    type: main
-  # 保留 target 原任务能力。
-  - name: my_target_replay
-    type: replay
-    ratio: 0.5
-  # 其他 source 任务也可作为 replay。
-  - name: my_source_b_replay
-    type: replay
-    ratio: all
+    datasets:
+      # 至少一个 main；这里通常放当前最希望迁移/优化的 source 任务数据。
+      - name: my_source_a_replay
+        type: main
+      # 保留 target 原任务能力。
+      - name: my_target_replay
+        type: replay
+        ratio: 0.5
+      # 其他 source 任务也可作为 replay。
+      - name: my_source_b_replay
+        type: replay
+        ratio: all
 
-  training:
-    # 同一 pipeline 的多个 task 若希望复用 transfer net，需要保持该名称和结构参数一致。
-    fusion_group_name: my_transfer_r64
-    block_size: 512
-    embed_dim: 1024
-    num_heads: 8
-    max_position_embeddings: 4096
-    num_epochs: 3
-    lr: 5.0e-05
-    alpha_init: 0.3
-    gradient_accumulation_steps: 8
-    mu_gate: 0.1
-    lambda_reg: 0.005
-    mu_target: 0.0
-    sigma_target: 1.0
-    num_projections: 2048
-    # 可选：b_only、a_only、ab_joint。建议先从 b_only 开始。
-    update_mode: b_only
+    training:
+      # 同一 pipeline 的多个 task 若希望复用 transfer net，需要保持该名称和结构参数一致。
+      fusion_group_name: my_transfer_r64
+      block_size: 512
+      embed_dim: 1024
+      num_heads: 8
+      max_position_embeddings: 4096
+      num_epochs: 3
+      lr: 5.0e-05
+      alpha_init: 0.3
+      gradient_accumulation_steps: 8
+      mu_gate: 0.1
+      lambda_reg: 0.005
+      mu_target: 0.0
+      sigma_target: 1.0
+      num_projections: 2048
+      # 可选：b_only、a_only、ab_joint。建议先从 b_only 开始。
+      update_mode: b_only
+      seed: 42
     seed: 42
-  seed: 42
 ```
 
 ### 5.1 关键参数说明
 
-| 参数 | 含义 | 起始建议 |
-| --- | --- | --- |
-| `template` | target tokenizer 的对话模板 | 必须按 target 模型选择 |
-| `cutoff_len` | token 截断长度 | 先用 512/1024，保证答案未被截掉 |
-| `batch_size` | 单步 batch | 显存紧张时用 1 |
-| `transfer_ratio` | 使用对齐层的比例 | `"1"` |
-| `layer_alignment` | 异构模型层对齐方式 | `tail` |
-| `block_size` | LoRA 权重分块行数 | rank 64 可先用 512 |
-| `embed_dim` | 融合网络隐藏维度 | 1024 |
-| `num_heads` | attention 头数 | 8，且需整除 `embed_dim` |
-| `num_epochs` | 融合训练轮数 | 3 |
-| `lr` | 融合网络学习率 | `5e-5` |
-| `alpha_init` | 预测 LoRA 增量初始缩放 | 0.3 |
-| `lambda_reg` | RDM 正则权重 | 0.005 |
-| `update_mode` | 更新 target LoRA 的 A/B 矩阵 | `b_only` |
+| 参数              | 含义                         | 起始建议                        |
+| ----------------- | ---------------------------- | ------------------------------- |
+| `template`        | target tokenizer 的对话模板  | 必须按 target 模型选择          |
+| `cutoff_len`      | token 截断长度               | 先用 512/1024，保证答案未被截掉 |
+| `batch_size`      | 单步 batch                   | 显存紧张时用 1                  |
+| `transfer_ratio`  | 使用对齐层的比例             | `"1"`                           |
+| `layer_alignment` | 异构模型层对齐方式           | `tail`                          |
+| `block_size`      | LoRA 权重分块行数            | rank 64 可先用 512              |
+| `embed_dim`       | 融合网络隐藏维度             | 1024                            |
+| `num_heads`       | attention 头数               | 8，且需整除 `embed_dim`         |
+| `num_epochs`      | 融合训练轮数                 | 3                               |
+| `lr`              | 融合网络学习率               | `5e-5`                          |
+| `alpha_init`      | 预测 LoRA 增量初始缩放       | 0.3                             |
+| `lambda_reg`      | RDM 正则权重                 | 0.005                           |
+| `update_mode`     | 更新 target LoRA 的 A/B 矩阵 | `b_only`                        |
 
 `max_position_embeddings` 约束融合网络内部 block 序列长度，不等同于文本的
 `cutoff_len`。如果 block 数或多 source 拼接后超过它，需要调大。
@@ -305,6 +305,104 @@ dataloader batch 数至少达到累积步数，最好能整除它；小数据 sm
   后一个 task 的 target LoRA。
 
 第一次实验建议只写一个 task，便于定位问题。
+
+### 5.3 示例：两个 LoRA checkpoint 跑 GSM8K 融合
+
+如果已经有一个 target LoRA 和一个 source LoRA，例如：
+
+```text
+target base:   /data/shared_ckpt/Llama-3.2-1B
+target LoRA:   /data/adapters/Llama-1B-Instruct-r64
+source LoRA:   /data/adapters/OLMo2-1B-teacher-r64
+fusion data:   gsm8k_fusion_200
+```
+
+可以直接从模板开始：
+
+```bash
+cp configs/heterofusion/custom/two_ckpt_merge_template.yaml \
+   configs/heterofusion/custom/llama32_olmo2_gsm8k.yaml
+```
+
+配置中最关键的是三类路径：
+
+```yaml
+experiment_name: llamda3.2_1b_gsm8k_heterfusion
+output_dir: /data/adapters/llamda3.2_1b_offical_Instuct_heterfusion_r64_gsm8k
+
+base_model_path: /data/shared_ckpt/Llama-3.2-1B
+initial_target_lora: /data/adapters/Llama-1B-Instruct-r64
+
+tasks:
+  - task_name: two_ckpt_tail_b_only
+    source_lora_paths:
+      - /data/adapters/OLMo2-1B-teacher-r64
+    layer_alignment: tail
+    datasets:
+      - name: gsm8k_fusion_200
+        type: main
+    training:
+      fusion_group_name: custom_two_ckpt_transfer
+      update_mode: b_only
+```
+
+这里 `base_model_path` 必须是 `initial_target_lora` 实际训练时的 base。如果
+`/data/adapters/Llama-1B-Instruct-r64` 是基于 `Llama-3.2-1B-Instruct` 训练的，
+则 `base_model_path` 也应改成对应的 Instruct base，而不是普通 base。
+
+`gsm8k_fusion_200` 需要先写入 `data/dataset_info.json`。仓库提供了转换脚本：
+
+```bash
+python tools/prepare_gsm8k_fusion_dataset.py \
+  --input data/genome_tasks/gsm8k/valid.json \
+  --output data/gsm8k_fusion/gsm8k_fusion_200.json \
+  --dataset-info data/dataset_info.json \
+  --dataset-name gsm8k_fusion_200 \
+  --limit 200 \
+  --shuffle
+```
+
+如果该数据集名称已经存在并确认要覆盖注册项，追加
+`--overwrite-dataset-entry`。转换后的数据仍是带答案的 SFT/fusion 数据，不能再作为
+无偏测试集。
+
+正式跑之前建议先把 smoke-test 配置改小：
+
+```yaml
+data_global:
+  batch_size: 1
+  num_workers: 0
+
+training:
+  num_epochs: 1
+  gradient_accumulation_steps: 1
+  num_projections: 128
+```
+
+启动命令：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python main.py \
+  configs/heterofusion/custom/llama32_olmo2_gsm8k.yaml
+```
+
+如果使用 `uv` 管理环境：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 uv run python main.py \
+  configs/heterofusion/custom/llama32_olmo2_gsm8k.yaml
+```
+
+输出 adapter 位于：
+
+```text
+/data/adapters/llamda3.2_1b_offical_Instuct_heterfusion_r64_gsm8k/two_ckpt_tail_b_only/merged_lora/
+```
+
+该目录仍然是 PEFT LoRA adapter，推理或继续合并时需要搭配同一个 target
+`base_model_path` 使用。若日志中没有任何 `Init HeteroFusion transfer net`，通常说明
+target/source 的层名或 LoRA 模块后缀没有匹配成功，应先检查两个 adapter 的
+`adapter_config.json`、rank 和 `target_modules`。
 
 ## 6. 运行前检查
 
@@ -491,13 +589,13 @@ PEFT safe merge 并保存 tokenizer。
 
 为了判断提升确实来自 HeteroFusion，至少运行：
 
-| 实验 | 用途 |
-| --- | --- |
-| Target base | 基础能力下界 |
-| Target LoRA | 融合前锚点 |
-| Fused LoRA | 主结果 |
+| 实验                       | 用途                         |
+| -------------------------- | ---------------------------- |
+| Target base                | 基础能力下界                 |
+| Target LoRA                | 融合前锚点                   |
+| Fused LoRA                 | 主结果                       |
 | Target LoRA 继续做普通 SFT | 控制“只是用了更多数据”的影响 |
-| 不同随机种子 | 估计方差 |
+| 不同随机种子               | 估计方差                     |
 
 建议的首轮消融：
 

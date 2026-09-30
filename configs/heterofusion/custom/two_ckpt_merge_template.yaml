@@ -6,7 +6,7 @@ output_dir: /data/adapters/llamda3.2_1b_offical_Instuct_heterfusion_r64_gsm8k
 base_model_path: /data/shared_ckpt/Llama-3.2-1B
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/adapters/Llama-1B-Instruct-r64
+initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-Instruct_r64
 
 data_global:
   dataset_dir: data
@@ -16,33 +16,33 @@ data_global:
   num_workers: 4
 
 tasks:
-- task_name: two_ckpt_tail_b_only
-  # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
-  source_lora_paths:
-  - "/data/adapters/OLMo2-1B-teacher-r64"
-  transfer_ratio: "1"
-  layer_alignment: tail
-  datasets:
-  # Replace this with replay data that matches your target/source tasks.
-  # Dataset names must exist in data/dataset_info.json or data/sample/dataset_info.json.
-  - name: gsm8k_fusion_200
-    type: main
-  training:
-    fusion_group_name: custom_two_ckpt_transfer
-    # LoRA block row#
-    block_size: 512
-    embed_dim: 1024
-    num_heads: 8
-    max_position_embeddings: 4096
-    num_epochs: 3
-    lr: 5.0e-05
-    alpha_init: 0.3
-    gradient_accumulation_steps: 8
-    mu_gate: 0.1
-    lambda_reg: 0.005
-    mu_target: 0.0
-    sigma_target: 1.0
-    num_projections: 2048
-    update_mode: b_only
+  - task_name: two_ckpt_tail_b_only
+    # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
+    source_lora_paths:
+      - "/data/adapters/OLMo2-1B-teacher-r64"
+    transfer_ratio: "1"
+    layer_alignment: tail
+    datasets:
+      # Replace this with replay data that matches your target/source tasks.
+      # Dataset names must exist in data/dataset_info.json or data/sample/dataset_info.json.
+      - name: gsm8k_fusion_200
+        type: main
+    training:
+      fusion_group_name: custom_two_ckpt_transfer
+      # LoRA block row#
+      block_size: 512
+      embed_dim: 1024
+      num_heads: 8
+      max_position_embeddings: 4096
+      num_epochs: 3
+      lr: 5.0e-05
+      alpha_init: 0.3
+      gradient_accumulation_steps: 8
+      mu_gate: 0.1
+      lambda_reg: 0.005
+      mu_target: 0.0
+      sigma_target: 1.0
+      num_projections: 2048
+      update_mode: b_only
+      seed: 42
     seed: 42
-  seed: 42
