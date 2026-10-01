@@ -25,7 +25,7 @@ tasks:
     datasets:
       # Replace this with replay data that matches your target/source tasks.
       # Dataset names must exist in data/dataset_info.json or data/sample/dataset_info.json.
-  - name: gsm8k_fusion_train_200
+      - name: gsm8k_fusion_train_200
         type: main
     training:
       fusion_group_name: custom_two_ckpt_transfer
