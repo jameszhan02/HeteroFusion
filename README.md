@@ -266,11 +266,11 @@ approximation of that delta as a PEFT LoRA adapter:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 uv run python tools/full_model_delta_to_lora.py \
-  --base-model /path/to/base_model \
-  --trained-model /path/to/full_finetuned_model \
-  --output-dir /path/to/adapters/target_r64 \
-  --rank 64 \
-  --lora-alpha 64 \
+  --base-model /data/shared_ckpt/Llama-3.2-1B \
+  --trained-model /data/shared_ckpt/Llama-3.2-1B-Instruct \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-Instruct_r128 \
+  --rank 128 \
+  --lora-alpha 128 \
   --dtype float32 \
   --device cuda:0 \
   --save-tokenizer
@@ -332,31 +332,31 @@ data_global:
   num_workers: 4
 
 tasks:
-- task_name: gsm8k_tail_b_only
-  source_lora_paths:
-  - /path/to/adapters/source_r64
-  transfer_ratio: "1"
-  layer_alignment: tail
-  datasets:
-  - name: gsm8k_fusion_200
-    type: main
-  training:
-    fusion_group_name: llama32_olmo2_r64
-    embed_dim: 1024
-    num_heads: 8
-    max_position_embeddings: 4096
-    num_epochs: 3
-    lr: 5.0e-05
-    alpha_init: 0.3
-    gradient_accumulation_steps: 8
-    mu_gate: 0.1
-    lambda_reg: 0.005
-    mu_target: 0.0
-    sigma_target: 1.0
-    num_projections: 2048
-    update_mode: b_only
+  - task_name: gsm8k_tail_b_only
+    source_lora_paths:
+      - /path/to/adapters/source_r64
+    transfer_ratio: "1"
+    layer_alignment: tail
+    datasets:
+      - name: gsm8k_fusion_200
+        type: main
+    training:
+      fusion_group_name: llama32_olmo2_r64
+      embed_dim: 1024
+      num_heads: 8
+      max_position_embeddings: 4096
+      num_epochs: 3
+      lr: 5.0e-05
+      alpha_init: 0.3
+      gradient_accumulation_steps: 8
+      mu_gate: 0.1
+      lambda_reg: 0.005
+      mu_target: 0.0
+      sigma_target: 1.0
+      num_projections: 2048
+      update_mode: b_only
+      seed: 42
     seed: 42
-  seed: 42
 ```
 
 `base_model_path` must be the base belonging to `initial_target_lora`; it is
@@ -376,7 +376,7 @@ Paths may contain exported environment variables. For example:
 base_model_path: ${MODEL_ROOT}/Llama-3.2-1B
 initial_target_lora: ${ADAPTER_ROOT}/Llama-3.2-chat300-r64
 source_lora_paths:
-- ${ADAPTER_ROOT}/OLMo2-1B-teacher-r64
+  - ${ADAPTER_ROOT}/OLMo2-1B-teacher-r64
 ```
 
 ### 3. Start HeteroFusion from the command line

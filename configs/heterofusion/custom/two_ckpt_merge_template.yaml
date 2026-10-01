@@ -1,25 +1,25 @@
-experiment_name: gsm8k_homofusion
-output_dir: /data/adapters/8_to_7_heterofusion
+experiment_name: gsm8k_heterofusion_128
+output_dir: /data/adapters/8_to_1_r128
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
-base_model_path: /data/shared_ckpt/OLMo-2-0425-1B
+base_model_path: /data/shared_ckpt/Llama-3.2-1B
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/shared_ckpt/opd_student_r64
+initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-Instruct_r128
 
 data_global:
   dataset_dir: data
-  template: olmo
+  template: llama3
   cutoff_len: 1024
   batch_size: 1
   num_workers: 4
 
 tasks:
-  - task_name: homo_fusion
+  - task_name: r128_fusion
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/opd_teacher_r64"
+      - "/data/shared_ckpt/opd_teacher_r128"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
