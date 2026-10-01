@@ -104,8 +104,8 @@ python -m json.tool /path/to/source_lora/adapter_config.json
 ```bash
 python tools/full_model_delta_to_lora.py \
   --base-model /data/shared_ckpt/OLMo-2-0425-1B \
-  --trained-model /data/shared_ckpt/opd_teacher \
-  --output-dir /data/shared_ckpt/Llama-3.2-1B-Instruct_r64 \
+  --trained-model /data/shared_ckpt/opd_student \
+  --output-dir /data/shared_ckpt/opd_student_r64 \
   --rank 64 \
   --lora-alpha 64 \
   --dtype float32 \
