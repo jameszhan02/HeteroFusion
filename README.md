@@ -338,7 +338,7 @@ tasks:
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
-      - name: gsm8k_fusion_200
+  - name: gsm8k_fusion_train_200
         type: main
     training:
       fusion_group_name: llama32_olmo2_r64
@@ -468,10 +468,12 @@ register the result in `data/dataset_info.json`:
 
 ```bash
 python tools/prepare_gsm8k_fusion_dataset.py \
-  --input data/genome_tasks/gsm8k/valid.json \
-  --output data/gsm8k_fusion/gsm8k_fusion_200.json \
+  --input data/genome_tasks/gsm8k/train.jsonl \
+  --output data/gsm8k_fusion/gsm8k_fusion_train_200.json \
   --dataset-info data/dataset_info.json \
-  --dataset-name gsm8k_fusion_200
+  --dataset-name gsm8k_fusion_train_200 \
+  --limit 200 \
+  --shuffle
 ```
 
 The converter preserves GSM8K reasoning, removes `<<calculation=result>>`

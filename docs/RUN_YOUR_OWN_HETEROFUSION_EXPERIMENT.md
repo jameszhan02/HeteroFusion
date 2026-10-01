@@ -314,7 +314,7 @@ dataloader batch 数至少达到累积步数，最好能整除它；小数据 sm
 target base:   /data/shared_ckpt/Llama-3.2-1B
 target LoRA:   /data/adapters/Llama-1B-Instruct-r64
 source LoRA:   /data/adapters/OLMo2-1B-teacher-r64
-fusion data:   gsm8k_fusion_200
+fusion data:   gsm8k_fusion_train_200
 ```
 
 可以直接从模板开始：
@@ -339,7 +339,7 @@ tasks:
       - /data/adapters/OLMo2-1B-teacher-r64
     layer_alignment: tail
     datasets:
-      - name: gsm8k_fusion_200
+      - name: gsm8k_fusion_train_200
         type: main
     training:
       fusion_group_name: custom_two_ckpt_transfer
@@ -350,14 +350,14 @@ tasks:
 `/data/adapters/Llama-1B-Instruct-r64` 是基于 `Llama-3.2-1B-Instruct` 训练的，
 则 `base_model_path` 也应改成对应的 Instruct base，而不是普通 base。
 
-`gsm8k_fusion_200` 需要先写入 `data/dataset_info.json`。仓库提供了转换脚本：
+`gsm8k_fusion_train_200` 需要先写入 `data/dataset_info.json`。仓库提供了转换脚本：
 
 ```bash
 python tools/prepare_gsm8k_fusion_dataset.py \
-  --input data/genome_tasks/gsm8k/valid.json \
-  --output data/gsm8k_fusion/gsm8k_fusion_200.json \
+  --input data/genome_tasks/gsm8k/train.jsonl \
+  --output data/gsm8k_fusion/gsm8k_fusion_train_200.json \
   --dataset-info data/dataset_info.json \
-  --dataset-name gsm8k_fusion_200 \
+  --dataset-name gsm8k_fusion_train_200 \
   --limit 200 \
   --shuffle
 ```

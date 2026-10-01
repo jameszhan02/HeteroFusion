@@ -2252,14 +2252,15 @@
       "response": "output"
     }
   },
-    "merge": {
+  "merge": {
     "file_name": "sample/merge.json",
     "columns": {
       "prompt": "instruction",
       "query": "input",
       "response": "output"
     }
-  },  "RE_New-York-Times-RE_sample_30000_sample300": {
+  },
+  "RE_New-York-Times-RE_sample_30000_sample300": {
     "file_name": "sample/RE_New-York-Times-RE_sample_30000_sample300.json",
     "columns": {
       "prompt": "instruction",
@@ -2298,6 +2299,13 @@
       "query": "input",
       "response": "output"
     }
+  },
+  "gsm8k_fusion_train_200": {
+    "file_name": "gsm8k_fusion/gsm8k_fusion_train_200.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
   }
-
 }
