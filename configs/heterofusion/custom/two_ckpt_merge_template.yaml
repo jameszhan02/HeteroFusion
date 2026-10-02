@@ -30,8 +30,8 @@ tasks:
     training:
       fusion_group_name: custom_two_ckpt_transfer
       # LoRA block row#
-      block_size: 256
-      embed_dim: 512
+      block_size: 512
+      embed_dim: 1024
       num_heads: 8
       max_position_embeddings: 4096
       num_epochs: 3
