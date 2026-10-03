@@ -103,10 +103,10 @@ python -m json.tool /path/to/source_lora/adapter_config.json
 
 ```bash
 python tools/full_model_delta_to_lora.py \
-  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B \
-  --trained-model /data/shared_ckpt/Qwen/Qwen2.5-Math-1.5B-Instruct \
-  --output-dir /data/shared_ckpt/Qwen/Qwen2.5-Math-1.5B-Instruct_r64 \
-  --rank 64 \
+  --base-model /data/shared_ckpt/Llama-3.2-1B \
+  --trained-model /data/shared_ckpt/Llama-3.2-1B-Instruct \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-Instruct_r32 \
+  --rank 32 \
   --lora-alpha 64 \
   --dtype float32 \
   --device cuda:0 \
@@ -575,9 +575,9 @@ python tools/run_genome_merged_eval.py \
 
 ```bash
 python tools/merge_lora_to_full_model.py \
-  --base-model /path/to/target_base \
-  --adapter outputs/custom/my_heterofusion_experiment/fuse_source_tasks_tail_b_only/merged_lora \
-  --output-dir outputs/custom/my_heterofusion_experiment/full_model \
+  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B-Instruct \
+  --adapter /data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora \
+  --output-dir data/shared_ckpt/Qwen/qwen3-1.7b-gsm8k-grpo_full \
   --dtype bfloat16 \
   --device cuda:0
 ```

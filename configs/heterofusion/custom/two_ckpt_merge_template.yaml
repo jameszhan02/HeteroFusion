@@ -19,7 +19,7 @@ tasks:
   - task_name: r64_qwen-math-fusion
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/Qwen/Qwen2.5-Math-1.5B-Instruct_r64"
+      - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
