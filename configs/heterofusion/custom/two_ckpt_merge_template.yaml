@@ -1,5 +1,5 @@
-experiment_name: gsm8k_heterofusion_64
-output_dir: /data/adapters/8_to_1_r64
+experiment_name: Qwenmath_to_Llama_r64
+output_dir: /data/shared_ckpt/Qwenmath_to_Llama_r64
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
@@ -16,10 +16,10 @@ data_global:
   num_workers: 4
 
 tasks:
-  - task_name: r128_fusion
+  - task_name: r64_qwen-math-fusion
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/opd_teacher_r64"
+      - "/data/shared_ckpt/Qwen/Qwen2.5-Math-1.5B-Instruct_r64"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
