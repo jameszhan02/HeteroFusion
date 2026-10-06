@@ -575,9 +575,9 @@ python tools/run_genome_merged_eval.py \
 
 ```bash
 python tools/merge_lora_to_full_model.py \
-  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B-Instruct \
-  --adapter /data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora \
-  --output-dir data/shared_ckpt/Qwen/qwen3-1.7b-gsm8k-grpo_full \
+  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B \
+  --adapter /data/shared_ckpt/Qwen/Qwen2.5-Math-1.5B-Instruct_r64 \
+  --output-dir /data/shared_ckpt/Qwen/Qwenmath_r64_recover \
   --dtype bfloat16 \
   --device cuda:0
 ```
