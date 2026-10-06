@@ -127,6 +127,20 @@ python3 tools/create_random_lora.py \
   --rank 64 --match-norm-to /data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora
 ```
 
+```bash
+python tools/merge_lora_to_full_model.py \
+  --base-model /data/shared_ckpt/Llama-3.2-1B \
+  --adapter /data/shared_ckpt/r64_baseline_lora/r64_qwen-baseline-gms8k/merged_lora \
+  --output-dir /data/shared_ckpt/r64_qwen-baseline-gms8k-full \
+  --dtype bfloat16 \
+  --device cuda:0
+```
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python main.py \
+  configs/heterofusion/custom/two_ckpt_merge_template.yaml
+```
+
 对每个 target/source 完整模型分别执行一次，并确保 `--base-model` 是该模型微调前的
 准确 checkpoint。显存允许时使用 `float32` 做差分。该转换是有损的，且默认不能表达
 norm、embedding、bias、LM head 等变化；能重新训练时，优先直接训练 LoRA。
