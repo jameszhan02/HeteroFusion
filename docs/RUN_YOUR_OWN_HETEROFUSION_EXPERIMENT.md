@@ -113,6 +113,20 @@ python tools/full_model_delta_to_lora.py \
   --save-tokenizer
 ```
 
+```bash
+python3 tools/create_zero_lora.py \
+  --base-model /path/to/target_base_model \
+  --output-dir adapters/target_zero_lora \
+  --rank 64 --mode both
+```
+
+```bash
+python3 tools/create_random_lora.py \
+  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B-Instruct \
+  --output-dir /data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-lora \
+  --rank 64 --match-norm-to /data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora
+```
+
 对每个 target/source 完整模型分别执行一次，并确保 `--base-model` 是该模型微调前的
 准确 checkpoint。显存允许时使用 `float32` 做差分。该转换是有损的，且默认不能表达
 norm、embedding、bias、LM head 等变化；能重新训练时，优先直接训练 LoRA。
