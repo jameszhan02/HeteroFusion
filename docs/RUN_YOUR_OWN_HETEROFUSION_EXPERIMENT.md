@@ -131,7 +131,7 @@ python3 tools/create_random_lora.py \
 python tools/merge_lora_to_full_model.py \
   --base-model /data/shared_ckpt/Llama-3.2-1B-Instruct \
   --adapter /data/shared_ckpt/r64_baseline_lora/r64_qwen-baseline-gms8k/merged_lora \
-  --output-dir /data/shared_ckpt/r64_llama-baseline-nonzero-gms8k-full \
+  --output-dir /data/shared_ckpt/r64_llama-baseline-gms8k-full \
   --dtype bfloat16 \
   --device cuda:0
 ```
