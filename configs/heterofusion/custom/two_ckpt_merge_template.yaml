@@ -6,7 +6,7 @@ output_dir: /data/shared_ckpt/r64_baseline_lora
 base_model_path: /data/shared_ckpt/Llama-3.2-1B-Instruct
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-zero-lora
+initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-Instruct-tool-calling-lora
 
 data_global:
   dataset_dir: data
@@ -19,7 +19,7 @@ tasks:
   - task_name: r64_qwen-baseline-gms8k
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
+      - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
