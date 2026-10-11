@@ -1,5 +1,5 @@
 experiment_name: r64_baseline
-output_dir: /data/shared_ckpt/r64_baseline_lora
+output_dir: /data/shared_ckpt/qwen_to_3_r64
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
