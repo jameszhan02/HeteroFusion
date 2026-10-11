@@ -6,7 +6,7 @@ output_dir: /data/shared_ckpt/3_baseline
 base_model_path: /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-zero-lora
+initial_target_lora: /data/shared_ckpt/Llama-3.2-1B-zero-lora-bonly
 
 data_global:
   dataset_dir: data
@@ -44,5 +44,5 @@ tasks:
       mu_target: 0.0
       sigma_target: 1.0
       num_projections: 2048
-      update_mode: ab_joint
+      update_mode: b_only
       seed: 42
