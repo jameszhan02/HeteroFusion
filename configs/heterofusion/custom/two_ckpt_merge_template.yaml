@@ -1,5 +1,5 @@
 experiment_name: r64_baseline
-output_dir: /data/shared_ckpt/qwen_to_3_r64
+output_dir: /data/shared_ckpt/3_baseline
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
@@ -19,8 +19,8 @@ tasks:
   - task_name: r64_qwen-baseline-gms8k
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
-      # - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
+      - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
+      # - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
