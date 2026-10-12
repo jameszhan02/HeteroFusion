@@ -130,8 +130,8 @@ python3 tools/create_random_lora.py \
 ```bash
 python tools/merge_lora_to_full_model.py \
   --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
-  --adapter /data/shared_ckpt/3_baseline/r64_qwen-baseline-gms8k/merged_lora \
-  --output-dir /data/shared_ckpt/heterofusion_baseline_to_3_r64_full \
+  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_qwen-baseline-gms8k/merged_lora \
+  --output-dir /data/shared_ckpt/qwen_to_3_heterofusion_r64_full \
   --dtype bfloat16 \
   --device cuda:0
 ```

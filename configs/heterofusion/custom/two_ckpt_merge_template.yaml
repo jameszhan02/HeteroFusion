@@ -44,5 +44,5 @@ tasks:
       mu_target: 0.0
       sigma_target: 1.0
       num_projections: 2048
-      update_mode: b_only
+      update_mode: ab_joint
       seed: 42
