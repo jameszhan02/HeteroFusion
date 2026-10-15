@@ -19,7 +19,7 @@ tasks:
   - task_name: r8_gms8k
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8"
+      - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
       #  - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
       # - "/data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8"
     transfer_ratio: "1"

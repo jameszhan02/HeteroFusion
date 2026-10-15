@@ -431,9 +431,9 @@ config:
 
 ```bash
 uv run python tools/merge_lora_to_full_model.py \
-  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B \
-  --adapter /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8 \
-  --output-dir /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8-full \
+  --base-model /data/shared_ckpt/Llama-3.2-1B \
+  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_target_Centaur/merged_lora \
+  --output-dir /data/shared_ckpt/llama3.2-1b-r8-merged-full \
   --device cuda:0 
 ```
 
