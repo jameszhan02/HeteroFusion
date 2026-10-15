@@ -16,24 +16,27 @@ class _SafeOpenWithPyTorchMetadataFallback:
 
     def __init__(self, safe_open_impl, *args, **kwargs):
         self._inner = safe_open_impl(*args, **kwargs)
-        self._reader = None
 
     def __enter__(self):
-        self._reader = self._inner.__enter__()
+        self._inner.__enter__()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         return self._inner.__exit__(exc_type, exc_value, traceback)
 
     def metadata(self):
-        metadata = self._reader.metadata()
+        metadata = self._inner.metadata()
         if metadata is None:
             print("[WARN] Safetensors metadata is missing; assuming format='pt'.")
             return {"format": "pt"}
         return metadata
 
     def __getattr__(self, name):
-        return getattr(self._reader, name)
+        # Recent Transformers versions retain the object returned by
+        # safe_open() and call get_slice() on it without first entering the
+        # context manager.  Delegate directly to the safetensors reader so
+        # both direct and context-managed access work.
+        return getattr(self._inner, name)
 
 
 def load_causal_lm(path, *, torch_dtype):
@@ -45,7 +48,7 @@ def load_causal_lm(path, *, torch_dtype):
 
     transformers_modeling_utils.safe_open = safe_open_with_fallback
     try:
-        return AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch_dtype)
+        return AutoModelForCausalLM.from_pretrained(path, dtype=torch_dtype)
     finally:
         transformers_modeling_utils.safe_open = original_safe_open
 

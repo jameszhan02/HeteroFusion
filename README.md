@@ -266,11 +266,11 @@ approximation of that delta as a PEFT LoRA adapter:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 uv run python tools/full_model_delta_to_lora.py \
-  --base-model /data/shared_ckpt/Llama-3.2-1B \
-  --trained-model /data/shared_ckpt/Llama-3.2-1B-Instruct \
-  --output-dir /data/shared_ckpt/Llama-3.2-1B-Instruct_r128 \
-  --rank 128 \
-  --lora-alpha 128 \
+  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B \
+  --trained-model /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1 \
+  --output-dir /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8 \
+  --rank 8 \
+  --lora-alpha 16 \
   --dtype float32 \
   --device cuda:0 \
   --save-tokenizer
@@ -434,7 +434,7 @@ config:
 uv run python tools/merge_lora_to_full_model.py \
   --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
   --adapter /data/shared_ckpt/qwen_to_3_r64/r64_target_Centaur/merged_lora \
-  --output-dir /data/shared_ckpt/Llama-3.2-1B-random-source-r64-Centaur-full \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-r64-Centaur-full \
   --dtype bfloat16 \
   --device cuda:0 
 ```
