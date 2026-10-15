@@ -1,4 +1,4 @@
-experiment_name: r64_target_Centaur
+experiment_name: r8_gms8k
 output_dir: /data/shared_ckpt/qwen_to_3_r64
 
 # The fused adapter is exported for this target base model.
@@ -16,7 +16,7 @@ data_global:
   num_workers: 4
 
 tasks:
-  - task_name: r64_target_Centaur
+  - task_name: r8_gms8k
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
       - "/data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8"
