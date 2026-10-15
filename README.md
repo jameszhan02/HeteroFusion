@@ -431,13 +431,12 @@ Use the same target base model specified by `base_model_path` in the fusion
 config:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 uv run python tools/merge_lora_to_full_model.py \
-  --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
-  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_qwen-baseline-gms8k/merged_lora \
-  --output-dir /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
+uv run python tools/merge_lora_to_full_model.py \
+  --base-model /data/shared_ckpt/Llama-3.2-1B \
+  --adapter /data/shared_ckpt/llama-3.2-1B-personality-detection-C \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-personality-detection-C-full \
   --dtype bfloat16 \
-  --device cuda:0 \
-  --max-shard-size 5GB
+  --device cuda:0 
 ```
 
 Use `--dtype float32` for the strictest numerical comparison, or `bfloat16` for
