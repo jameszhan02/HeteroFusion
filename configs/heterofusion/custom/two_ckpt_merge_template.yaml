@@ -3,10 +3,10 @@ output_dir: /data/shared_ckpt/qwen_to_3_r64
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
-base_model_path: /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400
+base_model_path: /data/shared_ckpt/Llama-3.2-1B
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/shared_ckpt/Llama-Centaur-1B-LoRA-r64
+initial_target_lora: /data/shared_ckpt/llama3.2-1b-gsm8k-r8
 
 data_global:
   dataset_dir: data
@@ -19,9 +19,9 @@ tasks:
   - task_name: r64_target_Centaur
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
-      - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
+      - "/data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8"
       #  - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
-      # - "/data/shared_ckpt/Qwen/grpo-baseline-qwen2.5-1.5b-lora"
+      # - "/data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8"
     transfer_ratio: "1"
     layer_alignment: tail
     datasets:
@@ -32,7 +32,7 @@ tasks:
     training:
       fusion_group_name: custom_two_ckpt_transfer
       # LoRA block row#
-      block_size: 512
+      block_size: 4096
       embed_dim: 1024
       num_heads: 8
       max_position_embeddings: 4096
