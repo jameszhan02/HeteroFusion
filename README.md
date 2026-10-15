@@ -433,8 +433,8 @@ config:
 ```bash
 uv run python tools/merge_lora_to_full_model.py \
   --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
-  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_target_personality-detection/merged_lora \
-  --output-dir /data/shared_ckpt/Llama-3.2-1B-random-source-r64-personality-full \
+  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_target_Centaur/merged_lora \
+  --output-dir /data/shared_ckpt/Llama-3.2-1B-random-source-r64-Centaur-full \
   --dtype bfloat16 \
   --device cuda:0 
 ```
