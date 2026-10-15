@@ -432,9 +432,9 @@ config:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 uv run python tools/merge_lora_to_full_model.py \
-  --base-model /path/to/target_base_model \
-  --adapter /path/to/fusion_outputs/llama32_olmo2_gsm8k/gsm8k_tail_b_only/merged_lora \
-  --output-dir /path/to/merged_full_model \
+  --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
+  --adapter /data/shared_ckpt/qwen_to_3_r64/r64_qwen-baseline-gms8k/merged_lora \
+  --output-dir /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
   --dtype bfloat16 \
   --device cuda:0 \
   --max-shard-size 5GB
