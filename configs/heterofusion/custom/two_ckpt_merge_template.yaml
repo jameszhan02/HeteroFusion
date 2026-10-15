@@ -1,4 +1,4 @@
-experiment_name: r64_target_personality-detection
+experiment_name: r64_target_Centaur
 output_dir: /data/shared_ckpt/qwen_to_3_r64
 
 # The fused adapter is exported for this target base model.
@@ -6,7 +6,7 @@ output_dir: /data/shared_ckpt/qwen_to_3_r64
 base_model_path: /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
-initial_target_lora: /data/shared_ckpt/llama-3.2-1B-personality-detection-C
+initial_target_lora: /data/shared_ckpt/Llama-Centaur-1B-LoRA-r64
 
 data_global:
   dataset_dir: data
@@ -16,7 +16,7 @@ data_global:
   num_workers: 4
 
 tasks:
-  - task_name: r64_target_personality-detection
+  - task_name: r64_target_Centaur
     # Put the other heterogeneous LoRA checkpoint here. Add more paths if needed.
     source_lora_paths:
       - "/data/shared_ckpt/Qwen/Qwen2.5-1.5B-random-nomatch-lora"
