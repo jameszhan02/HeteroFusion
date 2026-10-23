@@ -266,11 +266,11 @@ approximation of that delta as a PEFT LoRA adapter:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 uv run python tools/full_model_delta_to_lora.py \
-  --base-model /data/shared_ckpt/Qwen/Qwen2.5-1.5B \
-  --trained-model /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1 \
-  --output-dir /data/shared_ckpt/Qwen/Qwen2_5-1_5B-using-openai-gsm8k-data-enhanced-with-deepseek-v1-r8 \
-  --rank 8 \
-  --lora-alpha 16 \
+  --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
+  --trained-model /data/shengzhan/lllm/models/rl/llama32_1b_gsm8k/cot_sft_grpo_200step_20261022_134438/hf_ckpts/step_0000199 \
+  --output-dir /data/shared_ckpt/llama32_1b_gsm8k_r64 \
+  --rank 64 \
+  --lora-alpha 64 \
   --device cuda:0 \
   --save-tokenizer
 ```
@@ -431,9 +431,9 @@ config:
 
 ```bash
 uv run python tools/merge_lora_to_full_model.py \
-  --base-model /data/shared_ckpt/Llama-3.2-1B \
-  --adapter /data/shared_ckpt/qwen_to_3_r64/r8_gms8k/merged_lora \
-  --output-dir /data/shared_ckpt/llama3.2-1b-r8-random-merged-full \
+  --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
+  --adapter /data/shared_ckpt/llama32_1b_gsm8k_r64 \
+  --output-dir /data/shared_ckpt/llama32_1b_gsm8k_r64_full \
   --device cuda:0 
 ```
 
