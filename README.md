@@ -432,8 +432,8 @@ config:
 ```bash
 uv run python tools/merge_lora_to_full_model.py \
   --base-model /data/shared_ckpt/llama32-1b-loosepacked_4ep_20260807_233449/hf_ckpts/step_0002400 \
-  --adapter /data/shared_ckpt/llama32_1b_gsm8k_r64 \
-  --output-dir /data/shared_ckpt/llama32_1b_gsm8k_r64_full \
+  --adapter /data/shared_ckpt/heterofusion_merged_llama3.2/r65_gms8k_target_llama3.2/merged_lora \
+  --output-dir /data/shared_ckpt/heterofusion_llama32_1b_gsm8k_merged \
   --device cuda:0 
 ```
 

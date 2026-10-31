@@ -27,7 +27,9 @@ tasks:
     datasets:
       # Replace this with replay data that matches your target/source tasks.
       # Dataset names must exist in data/dataset_info.json or data/sample/dataset_info.json.
-      - name: gsm8k_fusion_train_200
+      # Same 200 GSM8K examples as the historical replay set, but the inner
+      # instruction and supervised response match the R1-zero eval contract.
+      - name: gsm8k_fusion_train_200_r1_zero
         type: main
     training:
       fusion_group_name: custom_two_ckpt_transfer

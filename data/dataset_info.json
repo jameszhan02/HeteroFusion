@@ -2307,5 +2307,13 @@
       "query": "input",
       "response": "output"
     }
+  },
+  "gsm8k_fusion_train_200_r1_zero": {
+    "file_name": "gsm8k_fusion/gsm8k_fusion_train_200_r1_zero.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
   }
 }

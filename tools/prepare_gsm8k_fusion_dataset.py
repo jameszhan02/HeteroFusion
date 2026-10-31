@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Convert GSM8K JSON/JSONL records to LLaMA-Factory SFT format."""
+"""Convert GSM8K JSON/JSONL records to LLaMA-Factory SFT format.
+
+The default output remains the historical ``Answer: ...`` contract.  Use
+``--response-format r1_zero`` together with ``--instruction-template`` to
+build replay data whose rendered prompt and response match an R1-zero eval.
+"""
 
 import argparse
 import json
@@ -53,6 +58,24 @@ def parse_args():
         help="Write only the final answer instead of the worked reasoning.",
     )
     parser.add_argument(
+        "--response-format",
+        choices=("answer", "r1_zero"),
+        default="answer",
+        help=(
+            "Supervised response contract. 'answer' preserves the historical "
+            "'Answer: ...' output; 'r1_zero' writes <think>...</think> and "
+            "<answer>...</answer>. Default: answer."
+        ),
+    )
+    parser.add_argument(
+        "--instruction-template",
+        default=None,
+        help=(
+            "Optional UTF-8 prompt template containing {question}. For an exact "
+            "train/eval match, point this at the same inner prompt used by eval."
+        ),
+    )
+    parser.add_argument(
         "--dataset-info",
         default=None,
         help="Optional dataset_info.json to update with the output dataset.",
@@ -83,7 +106,42 @@ def load_records(path: Path):
     return records
 
 
-def convert_record(item, index, *, keep_calculator_tags, include_reasoning):
+def load_instruction_template(path, *, response_format):
+    if path is None:
+        if response_format == "r1_zero":
+            raise ValueError(
+                "--instruction-template is required with --response-format r1_zero "
+                "so the training instruction can match the eval prompt exactly."
+            )
+        return DEFAULT_INSTRUCTION
+
+    template = Path(path).read_text(encoding="utf-8").rstrip("\r\n")
+    if "{question}" not in template:
+        raise ValueError(
+            f"Instruction template must contain {{question}}: {path}"
+        )
+    if response_format == "r1_zero":
+        missing_markers = [
+            marker for marker in ("<think>", "</think>", "<answer>", "</answer>")
+            if marker not in template
+        ]
+        if missing_markers:
+            raise ValueError(
+                "R1-zero instruction template is missing format markers "
+                f"{missing_markers}: {path}"
+            )
+    return template
+
+
+def convert_record(
+    item,
+    index,
+    *,
+    keep_calculator_tags,
+    include_reasoning,
+    response_format="answer",
+    instruction_template=DEFAULT_INSTRUCTION,
+):
     if "question" not in item or "answer" not in item:
         raise KeyError(f"Record {index} must contain 'question' and 'answer'.")
 
@@ -100,11 +158,17 @@ def convert_record(item, index, *, keep_calculator_tags, include_reasoning):
         reasoning = re.sub(r"[ \t]{2,}", " ", reasoning)
         reasoning = re.sub(r"\n{3,}", "\n\n", reasoning).strip()
 
-    instruction = DEFAULT_INSTRUCTION.format(question=str(item["question"]).strip())
-    if include_reasoning and reasoning:
-        output = f"{reasoning}\nAnswer: {final_answer}"
+    instruction = instruction_template.format(question=str(item["question"]).strip())
+    if response_format == "answer":
+        if include_reasoning and reasoning:
+            output = f"{reasoning}\nAnswer: {final_answer}"
+        else:
+            output = f"Answer: {final_answer}"
+    elif response_format == "r1_zero":
+        think_content = reasoning if include_reasoning else ""
+        output = f"<think>{think_content}</think>\n<answer>{final_answer}</answer>"
     else:
-        output = f"Answer: {final_answer}"
+        raise ValueError(f"Unsupported response format: {response_format}")
 
     return {
         "instruction": instruction,
@@ -153,6 +217,10 @@ def main():
     output_path = Path(args.output)
 
     records = load_records(input_path)
+    instruction_template = load_instruction_template(
+        args.instruction_template,
+        response_format=args.response_format,
+    )
     indexed_records = list(enumerate(records))
     if args.shuffle:
         random.Random(args.seed).shuffle(indexed_records)
@@ -167,6 +235,8 @@ def main():
             index,
             keep_calculator_tags=args.keep_calculator_tags,
             include_reasoning=not args.no_reasoning,
+            response_format=args.response_format,
+            instruction_template=instruction_template,
         )
         for index, item in indexed_records
     ]
