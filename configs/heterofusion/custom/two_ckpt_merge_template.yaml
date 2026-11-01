@@ -3,7 +3,7 @@ output_dir: /data/shared_ckpt/opd_teacher_sanity_check
 
 # The fused adapter is exported for this target base model.
 # Replace with the base model that owns initial_target_lora.
-base_model_path: /data/shared_ckpt/opd_teacher
+base_model_path: /data/shared_ckpt/OLMo-2-0425-1B
 
 # Target anchor LoRA. Its adapter basis is preserved by the default b_only mode.
 initial_target_lora: /data/shared_ckpt/opd_teacher_r64
