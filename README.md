@@ -431,9 +431,9 @@ config:
 
 ```bash
 uv run python tools/merge_lora_to_full_model.py \
-  --base-model /data/shared_ckpt/opd_teacher \
-  --adapter /data/shared_ckpt/opd_teacher_sanity_check/heterofusion_sanity_check/merged_lora \
-  --output-dir /data/shared_ckpt/heterofusion_llama32_1b_gsm8k_merged \
+  --base-model /data/shared_ckpt/OLMo-2-0425-1B \
+  --adapter /data/shared_ckpt/opd_teacher_r64 \
+  --output-dir /data/shared_ckpt/opd_teacher_r64_merged \
   --device cuda:0 
 ```
 
