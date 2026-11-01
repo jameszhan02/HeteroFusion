@@ -5,7 +5,7 @@
 # HeteroFusion setup. This run starts a fresh rank-64 LoRA from the plain
 # Llama-3.2-1B base model and trains both LoRA factors through LLaMA-Factory.
 
-model_name_or_path: /mnt/d/git_projects/Hetero_Block_Reconstruction/models/Llama-3.2-1B
+model_name_or_path: /data/shared_ckpt/Llama-3.2-1B
 
 stage: sft
 do_train: true
